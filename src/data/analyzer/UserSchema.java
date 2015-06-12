@@ -3,19 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package analizador.de.datos;
+package data.analyzer;
 
 /**
  *
  * @author matias
  */
-public class AnalizadorDeDatos {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-       System.out.println("holu");
-    }
+public interface UserSchema {
+    
+    public abstract String getKeyAttribute();
     
 }
