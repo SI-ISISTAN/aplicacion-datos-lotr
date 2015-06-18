@@ -18,8 +18,10 @@ import connection.lotr.*;
 public class DataAnalyzer {
     
     private DataInput dataInput;
+    private Model model;
     
-    public DataAnalyzer(DataInput data) throws UnknownHostException{
+    public DataAnalyzer(DataInput data, Model m) throws UnknownHostException{
+       model=m;
        dataInput = data;
        dataInput.connectToSource();
     }
@@ -32,5 +34,10 @@ public class DataAnalyzer {
     public ArrayList<GameSchema> getGamesForUser(String keyAttribute){
        return dataInput.getGamesForUser(keyAttribute);
     }
+
+    public Model getModel() {
+        return model;
+    }
+   
     
 }

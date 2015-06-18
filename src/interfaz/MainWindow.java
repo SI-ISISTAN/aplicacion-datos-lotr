@@ -16,6 +16,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import connection.lotr.LotRDataInput;
+import connection.lotr.LotRModel;
 /**
  *
  * @author matias
@@ -152,27 +153,28 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            analizador = new DataAnalyzer(new LotRDataInput());
-            this.append("Conectado a la base de datos con éxito.");
-            ArrayList<UserSchema> users = analizador.getUsers();
-            String [] userIDs = new String[users.size()];
-            int i =0;
-            for (UserSchema user : users){
-                userIDs[i]= user.getKeyAttribute();
-                i++;
-            }
-            if (users.size()>0){
-                usersList.setModel(new javax.swing.DefaultComboBoxModel(userIDs));
-                usersList.setEnabled(true);
-            }
-             getGamesButton.setEnabled(true);
+            analizador = new DataAnalyzer(new LotRDataInput(), new LotRModel());
         } catch (UnknownHostException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.append("Conectado a la base de datos con éxito.");
+        ArrayList<UserSchema> users = analizador.getUsers();
+        String [] userIDs = new String[users.size()];
+        int i =0;
+        for (UserSchema user : users){
+            userIDs[i]= user.getKeyAttribute();
+            i++;
+        }
+        if (users.size()>0){
+            usersList.setModel(new javax.swing.DefaultComboBoxModel(userIDs));
+            usersList.setEnabled(true);
+        }
+        getGamesButton.setEnabled(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void getGamesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getGamesButtonActionPerformed
         analysisInput = analizador.getGamesForUser((String)usersList.getSelectedItem());
+        analizador.getModel().evaluateGame(analysisInput.get(18));
         this.append("Se han hallado "+(analysisInput.size())+" partidas para este jugador.");
     }//GEN-LAST:event_getGamesButtonActionPerformed
 

@@ -6,7 +6,7 @@
 package data.analyzer;
 
 /**
- *
+ * Abstract model for user object for which a symlog profile will be made.
  * @author matias
  */
 public interface UserSchema {

@@ -5,14 +5,10 @@
  */
 package data.analyzer;
 
-import java.util.ArrayList;
-
 /**
- * Abstract model for container for game actions and other data.
+ *
  * @author matias
  */
-public interface GameSchema {
-    
-    public abstract ArrayList<GameActionSchema> getGameActions();
+public interface GameActionSchema {
     
 }

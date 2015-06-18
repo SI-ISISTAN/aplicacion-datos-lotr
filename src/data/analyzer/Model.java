@@ -5,14 +5,13 @@
  */
 package data.analyzer;
 
-import java.util.ArrayList;
-
 /**
- * Abstract model for container for game actions and other data.
+ * Abstract class for model used to evaluate game actions and ellaborate Symlog Profile.
  * @author matias
  */
-public interface GameSchema {
+public abstract class Model {
     
-    public abstract ArrayList<GameActionSchema> getGameActions();
+    
+    public abstract void evaluateGame(GameSchema game);
     
 }
