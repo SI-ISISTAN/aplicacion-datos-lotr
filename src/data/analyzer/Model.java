@@ -12,6 +12,6 @@ package data.analyzer;
 public abstract class Model {
     
     
-    public abstract void evaluateGame(GameSchema game);
+    public abstract void evaluateGame(GameSchema game, UserSchema user);
     
 }

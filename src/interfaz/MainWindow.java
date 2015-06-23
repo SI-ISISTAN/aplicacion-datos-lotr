@@ -17,6 +17,7 @@ import javax.swing.text.Document;
 
 import connection.lotr.LotRDataInput;
 import connection.lotr.LotRModel;
+import java.util.Hashtable;
 /**
  *
  * @author matias
@@ -24,6 +25,7 @@ import connection.lotr.LotRModel;
 public class MainWindow extends javax.swing.JFrame {
     
     private DataAnalyzer analizador;
+    private Hashtable<String,UserSchema> availableUsers;
     private ArrayList<GameSchema> analysisInput;
     
     
@@ -39,6 +41,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
+        availableUsers = new Hashtable<String,UserSchema>();
         initComponents();
     }
 
@@ -162,6 +165,7 @@ public class MainWindow extends javax.swing.JFrame {
         String [] userIDs = new String[users.size()];
         int i =0;
         for (UserSchema user : users){
+            availableUsers.put(user.getKeyAttribute(),user);
             userIDs[i]= user.getKeyAttribute();
             i++;
         }
@@ -173,9 +177,19 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void getGamesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getGamesButtonActionPerformed
-        analysisInput = analizador.getGamesForUser((String)usersList.getSelectedItem());
-        analizador.getModel().evaluateGame(analysisInput.get(18));
-        this.append("Se han hallado "+(analysisInput.size())+" partidas para este jugador.");
+        //busco el objeto usuario indexado por su atributo clave
+        UserSchema user = null;
+        user=availableUsers.get((String)usersList.getSelectedItem());
+        //si existe usuario, cargo juegos para él
+        if (user!=null){
+            analysisInput = analizador.getGamesForUser((String)usersList.getSelectedItem());
+            //evalua un juego de prueba
+            if (analysisInput.size() > 0){
+                analizador.getModel().evaluateGame(analysisInput.get(0),user);
+            }
+            this.append("Se han hallado "+(analysisInput.size())+" partidas para este jugador.");
+            }
+        
     }//GEN-LAST:event_getGamesButtonActionPerformed
 
     /**

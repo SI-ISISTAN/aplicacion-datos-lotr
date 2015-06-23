@@ -34,4 +34,7 @@ public class LotRGame implements GameSchema{
         return actions;
     };
     
+    public Object gerAttr(String at){
+        return gameData.get(at);
+    }
 }
