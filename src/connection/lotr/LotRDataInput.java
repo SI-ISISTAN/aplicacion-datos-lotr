@@ -64,6 +64,20 @@ public class LotRDataInput implements DataInput{
        return usersList;
     }
     
+    public ArrayList<GameSchema> getGames(){
+        DBCollection gamesCollection = db.getCollection("games");
+        DBCursor games = gamesCollection.find();
+        ArrayList<GameSchema> gamesList = new ArrayList<GameSchema>();
+        try {
+            while(games.hasNext()) {
+                gamesList.add(new LotRGame(games.next()));
+            }
+        } finally {
+            games.close();
+        }
+        return gamesList;
+    } 
+    
     public ArrayList<GameSchema> getGamesForUser(String userID){
         DBCollection gamesCollection = db.getCollection("games");
         BasicDBObject query = new BasicDBObject("players", new BasicDBObject("$elemMatch", new BasicDBObject("userID", userID)));

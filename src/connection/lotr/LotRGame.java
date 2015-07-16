@@ -34,4 +34,14 @@ public class LotRGame implements GameSchema{
         return actions;
     };
     
+    public Object get(String attr){
+        return gameData.get(attr);
+    }
+    
+    public boolean isAnalyzed(){
+        if (gameData.get("analyzed")==null || !(Boolean)gameData.get("analyzed")){
+              return false;
+        }
+        else return true;
+    }
 }

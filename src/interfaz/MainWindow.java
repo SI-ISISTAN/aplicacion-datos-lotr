@@ -52,7 +52,6 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel2 = new javax.swing.JLabel();
-        usersList = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
@@ -61,15 +60,13 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         consoleArea = new javax.swing.JTextPane();
         getGamesButton = new javax.swing.JButton();
+        cabezaButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Analizador de Datos - LotR");
 
-        jLabel2.setText("Usuario a analizar");
+        jLabel2.setText("Partidas sin analizar");
         jLabel2.setName(""); // NOI18N
-
-        usersList.setEnabled(false);
-        usersList.setName("availableUsers"); // NOI18N
 
         jLabel3.setText("Modelo de análisis");
         jLabel3.setName(""); // NOI18N
@@ -99,6 +96,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        cabezaButton.setText("Analizar (cabeza)");
+        cabezaButton.setEnabled(false);
+        cabezaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cabezaButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -112,8 +117,8 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(getGamesButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(usersList, javax.swing.GroupLayout.Alignment.LEADING, 0, 152, Short.MAX_VALUE)))
+                        .addComponent(cabezaButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(getGamesButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)))
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
@@ -131,9 +136,9 @@ public class MainWindow extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(usersList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
                         .addComponent(getGamesButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cabezaButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -166,17 +171,24 @@ public class MainWindow extends javax.swing.JFrame {
             i++;
         }
         if (users.size()>0){
-            usersList.setModel(new javax.swing.DefaultComboBoxModel(userIDs));
-            usersList.setEnabled(true);
+            //deprectaed
         }
         getGamesButton.setEnabled(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void getGamesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getGamesButtonActionPerformed
-        analysisInput = analizador.getGamesForUser((String)usersList.getSelectedItem());
-        analizador.getModel().evaluateGame(analysisInput.get(18));
-        this.append("Se han hallado "+(analysisInput.size())+" partidas para este jugador.");
+        analysisInput = analizador.getUnanalizedGames();
+        this.append("Se han hallado "+(analysisInput.size())+" partidas sin analizar.");
+        if (analysisInput.size()>0){
+            cabezaButton.setEnabled(true);
+        }
     }//GEN-LAST:event_getGamesButtonActionPerformed
+
+    private void cabezaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cabezaButtonActionPerformed
+        for (GameSchema game : analysisInput){
+            analizador.getModel().evaluateGame(game);
+        }
+    }//GEN-LAST:event_cabezaButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -217,6 +229,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cabezaButton;
     private javax.swing.JTextPane consoleArea;
     private javax.swing.JButton getGamesButton;
     private javax.swing.JButton jButton1;
@@ -226,6 +239,5 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox usersList;
     // End of variables declaration//GEN-END:variables
 }

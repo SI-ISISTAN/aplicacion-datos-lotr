@@ -15,4 +15,6 @@ public interface GameSchema {
     
     public abstract ArrayList<GameActionSchema> getGameActions();
     
+    public abstract boolean isAnalyzed();
+    
 }

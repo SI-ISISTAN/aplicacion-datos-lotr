@@ -18,6 +18,8 @@ public interface DataInput {
     
     public abstract ArrayList<UserSchema> getUsers();
     
+    public abstract ArrayList<GameSchema> getGames();
+    
     public abstract ArrayList<GameSchema> getGamesForUser(String userID);
     
 }

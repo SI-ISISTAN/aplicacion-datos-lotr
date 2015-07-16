@@ -34,6 +34,18 @@ public class DataAnalyzer {
     public ArrayList<GameSchema> getGamesForUser(String keyAttribute){
        return dataInput.getGamesForUser(keyAttribute);
     }
+    
+    public ArrayList<GameSchema> getUnanalizedGames(){
+       ArrayList<GameSchema> allGames = dataInput.getGames();
+       ArrayList<GameSchema> unanalyzed = new ArrayList();
+       for (GameSchema game: allGames){
+           //cast json boolean to string for comparison
+          if (!game.isAnalyzed()){
+              unanalyzed.add(game);
+          }
+       }
+       return unanalyzed;
+    }
 
     public Model getModel() {
         return model;
