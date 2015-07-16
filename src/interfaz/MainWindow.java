@@ -17,6 +17,7 @@ import javax.swing.text.Document;
 
 import connection.lotr.LotRDataInput;
 import connection.lotr.LotRModel;
+import java.util.Hashtable;
 /**
  *
  * @author matias
@@ -24,6 +25,7 @@ import connection.lotr.LotRModel;
 public class MainWindow extends javax.swing.JFrame {
     
     private DataAnalyzer analizador;
+    private Hashtable<String,UserSchema> availableUsers;
     private ArrayList<GameSchema> analysisInput;
     
     
@@ -39,6 +41,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
+        availableUsers = new Hashtable<String,UserSchema>();
         initComponents();
     }
 
@@ -167,6 +170,7 @@ public class MainWindow extends javax.swing.JFrame {
         String [] userIDs = new String[users.size()];
         int i =0;
         for (UserSchema user : users){
+            availableUsers.put(user.getKeyAttribute(),user);
             userIDs[i]= user.getKeyAttribute();
             i++;
         }
@@ -177,11 +181,13 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void getGamesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getGamesButtonActionPerformed
-        analysisInput = analizador.getUnanalizedGames();
+
+       analysisInput = analizador.getUnanalizedGames();
         this.append("Se han hallado "+(analysisInput.size())+" partidas sin analizar.");
         if (analysisInput.size()>0){
             cabezaButton.setEnabled(true);
         }
+
     }//GEN-LAST:event_getGamesButtonActionPerformed
 
     private void cabezaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cabezaButtonActionPerformed

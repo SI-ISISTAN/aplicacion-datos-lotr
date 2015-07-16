@@ -15,12 +15,12 @@ import java.util.Hashtable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import data.analyzer.UserSchema;
 /**
  *
  * @author matias
  */
 public class LotRModel extends Model{
-    
     private JSONObject loadedModel;
     
     public LotRModel(){
@@ -82,4 +82,4 @@ public class LotRModel extends Model{
         String actionName = (String) action.get("action");
         System.out.println(actionName);
     }
-}
+};

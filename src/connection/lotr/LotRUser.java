@@ -22,4 +22,12 @@ public class LotRUser implements UserSchema{
         return (String)((DBObject)(userData.get("local"))).get("userID");
     }
     
+    public void put(String at, Object val){
+        userData.put(at,val);
+    }
+    
+    public Object get(String at){
+        return userData.get(at);
+    }
+    
 }
