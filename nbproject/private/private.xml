@@ -3,23 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/home/matias/Escritorio/analizador-datos/src/connection/lotr/LotRGame.java</file>
-=======
->>>>>>> c088afd0bdba870dae186742d1f16177b73af4e1
             <file>file:/home/matias/Escritorio/analizador-datos/src/connection/lotr/LotRModel.java</file>
-            <file>file:/home/matias/Escritorio/analizador-datos/src/data/analyzer/GameSchema.java</file>
+            <file>file:/home/matias/Escritorio/analizador-datos/src/connection/lotr/LotRDataInput.java</file>
+            <file>file:/home/matias/Escritorio/analizador-datos/src/data/analyzer/DataInput.java</file>
             <file>file:/home/matias/Escritorio/analizador-datos/src/connection/lotr/LotRGame.java</file>
+            <file>file:/home/matias/Escritorio/analizador-datos/src/data/analyzer/SymlogProfile.java</file>
             <file>file:/home/matias/Escritorio/analizador-datos/src/interfaz/MainWindow.java</file>
-<<<<<<< HEAD
             <file>file:/home/matias/Escritorio/analizador-datos/src/data/analyzer/DataAnalyzer.java</file>
-            <file>file:/home/matias/Escritorio/analizador-datos/src/data/analyzer/GameSchema.java</file>
-            <file>file:/home/matias/Escritorio/analizador-datos/src/data/analyzer/Model.java</file>
-=======
-            <file>file:/home/matias/Escritorio/analizador-datos/src/connection/lotr/LotRGameAction.java</file>
-            <file>file:/home/matias/Escritorio/analizador-datos/src/data/analyzer/Model.java</file>
-            <file>file:/home/matias/Escritorio/analizador-datos/src/connection/lotr/LotRUser.java</file>
->>>>>>> c088afd0bdba870dae186742d1f16177b73af4e1
         </group>
     </open-files>
 </project-private>

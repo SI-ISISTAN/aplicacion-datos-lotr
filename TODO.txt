@@ -1,0 +1,9 @@
+Hay que armar chequeos para vliadar el formato de un modelo, con las siguientes condiciones (al menos):
+	- todas tienen que tener a priori, nombre y format
+	- las simpleformat deben tener:
+		-campo choices, arreglo de al menos 1 elemento
+			-cada elemento debe tener un campo "values", arreglo de 3 elementos int
+			-el elemento "other" debe estar en el último lugar (potencialmente modificable)
+	-las complex, veremos
+
+OJO: Este chequeo podria hacerse tranquilmanete cuando pida cargar manualmente el modelo a utilizar, y si no te da positivo no te deja seguir. ta buena la idea

@@ -1,3 +1,8 @@
 {
-"actions" : [{"name": "Gandalf"},{"name": "Council"}]
+"actions" : [{"name": "Preparations",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "RollDie",  "result" : [1,0,0]},
+					{"action" : "other",  "result" : [0,0,0]}]
+			}]
 }

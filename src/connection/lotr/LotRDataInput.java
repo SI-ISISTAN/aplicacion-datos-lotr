@@ -41,7 +41,7 @@ public class LotRDataInput implements DataInput{
         MongoClient mongoClient;
         try {
             mongoClient = new MongoClient( "localhost" );
-            db = mongoClient.getDB( "test" );
+            db = mongoClient.getDB( "lotr" );
         } catch (UnknownHostException ex) {
             Logger.getLogger(LotRDataInput.class.getName()).log(Level.SEVERE, null, ex);
         }
