@@ -29,7 +29,7 @@ public class MainWindow extends javax.swing.JFrame {
     private ArrayList<GameSchema> analysisInput;
     
     
-    public void append(String s) {
+    public void consolePrint(String s) {
         try {
            Document doc = consoleArea.getDocument();
            doc.insertString(doc.getLength(), s+"\n", null);
@@ -161,11 +161,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            analizador = new DataAnalyzer(new LotRDataInput(), new LotRModel());
+            analizador = new DataAnalyzer(new LotRDataInput(), new LotRModel(this));
         } catch (UnknownHostException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.append("Conectado a la base de datos con éxito.");
+        
         ArrayList<UserSchema> users = analizador.getUsers();
         String [] userIDs = new String[users.size()];
         int i =0;
@@ -183,7 +183,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void getGamesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getGamesButtonActionPerformed
 
        analysisInput = analizador.getUnanalizedGames();
-        this.append("Se han hallado "+(analysisInput.size())+" partidas sin analizar.");
+        this.consolePrint("Se han hallado "+(analysisInput.size())+" partidas sin analizar.");
         if (analysisInput.size()>0){
             cabezaButton.setEnabled(true);
         }

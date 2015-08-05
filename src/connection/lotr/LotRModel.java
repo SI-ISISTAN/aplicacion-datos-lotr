@@ -16,6 +16,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import data.analyzer.UserSchema;
+import interfaz.MainWindow;
 import java.util.ArrayList;
 /**
  *
@@ -23,10 +24,14 @@ import java.util.ArrayList;
  */
 public class LotRModel extends Model{
     private Hashtable<String, JSONObject> evaluationPolicy;
+    private MainWindow window;
     
-    public LotRModel(){
+    public LotRModel(MainWindow w){
         super();
-        System.out.println("Test de leer config:");
+        
+        window = w;
+        window.consolePrint("Conectado a la base de datos con éxito. \n ---------------------------------------------");
+        window.consolePrint("Leyendo modelo de datos cargado...");
         JSONParser parser = new JSONParser();
          try {
             Object obj = parser.parse(new FileReader("model.json"));
@@ -41,9 +46,9 @@ public class LotRModel extends Model{
                 evaluationPolicy.put((String)ev.get("name"), ev );
                 i++;
             }
-            
+            window.consolePrint("Modelo cargado con éxito. \n ---------------------------------------------");
          } catch (Exception e) {
-             System.out.println("No se encontró modelo de análisis o éste es erróneo");
+             window.consolePrint("No se encontró modelo de análisis o éste es erróneo. \n ---------------------------------------------");
             e.printStackTrace();
         }
     }
@@ -76,7 +81,8 @@ public class LotRModel extends Model{
             for(DBObject p : playersArr) {
               partialProfiles.put((String)p.get("alias"), new SymlogProfile());
             }
-            System.out.println("Analizo nueva partida.");
+            window.consolePrint("Analizo nueva partida. Game ID: "+game.get("gameID"));
+            window.consolePrint("---------------------------------------------");
             //evalua cada accion de juego
             ArrayList<GameActionSchema> gameActions = game.getGameActions();
             int i=0;
@@ -95,9 +101,10 @@ public class LotRModel extends Model{
             }
             //imprimo resultado
             for (String key : partialProfiles.keySet()) {
-                System.out.println(key);
-                System.out.println(partialProfiles.get(key).toString());
+                window.consolePrint(key);
+                window.consolePrint(partialProfiles.get(key).toString());
             }
+            window.consolePrint("---------------------------------------------");
         }
     };
     
@@ -121,6 +128,7 @@ public class LotRModel extends Model{
             result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
             this.setRange(choices, result);
         }
+        result.sumInteraction();
     }
     
     public void setRange(JSONArray choices, SymlogProfile profile){

@@ -2,7 +2,82 @@
 "actions" : [{"name": "Preparations",
 				"format" : "SimpleChoice",
 				"choices" : [
-					{"action" : "RollDie",  "result" : [1,0,0]},
+					{"action" : "RollDie",  "result" : [2,0,0]},
 					{"action" : "other",  "result" : [0,0,0]}]
-			}]
+			},
+			{"name": "Fellowship",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "ForceDiscard",  "result" : [-2,2,1]},
+					{"action" : "other",  "result" : [1,-2,-1]}]
+			},
+			{"name": "SpeakFriend",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "CommonDiscard",  "result" : [0,0,0]},
+					{"action" : "other",  "result" : [1,-1,-1]}]
+			},
+			{"name": "Recovery",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "DealHobbitCards",  "result" : [0,1,0]},
+					{"action" : "ForceDiscard",  "result" : [1,0,0]},
+					{"action" : "other",  "result" : [0,0,0]}]
+			},
+			{"name": "GalardielTest",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "ForceDiscard",  "result" : [-1,1,0]},
+					{"action" : "other",  "result" : [2,-1,-1]}]
+			},
+			{"name": "OrthancFire",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "ForceDiscard",  "result" : [-1,1,1]},
+					{"action" : "other",  "result" : [2,-2,-1]}]
+			},
+			{"name": "DeadFaces",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "KillPlayer",  "result" : [-2,-1,-2]},
+					{"action" : "other",  "result" : [0,0,0]}]
+			},
+			{"name": "NazgulRing",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "ForceDiscard",  "result" : [-2,1,0]},
+					{"action" : "other",  "result" : [0,-2,0]}]
+			},
+			{"name": "ShelobAppear",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "RollDie",  "result" : [-2,0,1]},
+					{"action" : "other",  "result" : [1,-2,-1]}]
+			},
+			{"name": "SamSaveFrodo",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "ChangeToken",  "result" : [1,0,0]},
+					{"action" : "other",  "result" : [0,0,0]}]
+			},
+			{"name": "PelennorFields",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "RollDie",  "result" : [-1,-1,0]},
+					{"action" : "other",  "result" : [0,0,1]}]
+			},
+			{"name": "SauronMouth",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "RollDie",  "result" : [-1,-1,0]},
+					{"action" : "other",  "result" : [0,0,1]}]
+			},
+			{"name": "CardsPhase",
+				"format" : "SimpleChoice",
+				"choices" : [
+					{"action" : "NextPhase",  "result" : [0,0,0]},
+					{"action" : "other",  "result" : [1,0,0]}]
+			}
+
+			]
 }

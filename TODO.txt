@@ -7,3 +7,5 @@ Hay que armar chequeos para vliadar el formato de un modelo, con las siguientes 
 	-las complex, veremos
 
 OJO: Este chequeo podria hacerse tranquilmanete cuando pida cargar manualmente el modelo a utilizar, y si no te da positivo no te deja seguir. ta buena la idea
+
+-chequear Recovery en model
