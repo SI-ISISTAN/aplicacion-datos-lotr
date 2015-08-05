@@ -146,10 +146,8 @@ public class SymlogProfile {
     public ArrayList<Float> getNormalizedProfile(){
         ArrayList<Float> n = new ArrayList<Float>();
         float mediaUD = this.up_down_max-this.up_down_min;
-        System.out.println(mediaUD);
         if (mediaUD!=0){
             n.add(0, (this.up_down-this.up_down_min)/mediaUD);
-            System.out.println((this.up_down-this.up_down_min)/mediaUD);
         }
         else{
             n.add(0, (float)0);
@@ -169,6 +167,27 @@ public class SymlogProfile {
             n.add(2, (float)0);
         }
         return n;
+    }
+    
+    public void addToRangeSingle(long ud, long pn, long fb){
+        if (ud>0){
+            up_down_max+=ud;
+        }
+        else if (ud<0){
+            up_down_min+=ud;
+        }
+        if (pn>0){
+            positive_negative_max+=pn;
+        }
+        else if (pn<0){
+            positive_negative_min+=pn;
+        }
+        if (fb>0){
+            forward_backward_max+=fb;
+        }
+        else if (fb<0){
+            forward_backward_min+=fb;
+        }
     }
     
     @Override

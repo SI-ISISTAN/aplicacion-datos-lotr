@@ -77,6 +77,29 @@
 				"choices" : [
 					{"action" : "NextPhase",  "result" : [0,0,0]},
 					{"action" : "other",  "result" : [1,0,0]}]
+			},
+			{"name": "PlayGandalfCard",
+				"format" : "SpontaneousChoice",
+				"field" : ["data","card","name"],
+				"choices" : [
+					{"action" : "Previsión",  "result" : [0,0,1]},
+					{"action" : "Guía",  "result" : [-1,1,1]},
+					{"action" : "Sanación",  "result" : [1,0,-1]},
+					{"action" : "Persistencia",  "result" : [2,0,0]},
+					{"action" : "Magia",  "result" : [0,1,1]}]
+			},
+			{"name": "PlayCard",
+				"format" : "SpontaneousChoice",
+				"field" : ["data","played","name"],
+				"choices" : [
+					{"action" : "Miruvor",  "result" : [-2,1,0]},
+					{"action" : "Staff",  "result" : [0,1,0]},
+					{"action" : "Athelas",  "result" : [0,1,0]},
+					{"action" : "Elessar",  "result" : [1,0,0]},
+					{"action" : "Mithril",  "result" : [1,0,0]},
+					{"action" : "Phial",  "result" : [0,1,0]},
+					{"action" : "Belt",  "result" : [1,0,0]},
+					{"action" : "Lembas",  "result" : [1,0,0]}]
 			}
 
 			]

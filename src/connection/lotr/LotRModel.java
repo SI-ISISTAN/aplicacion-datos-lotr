@@ -5,6 +5,7 @@
  */
 package connection.lotr;
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import data.analyzer.GameActionSchema;
 import data.analyzer.Model;
@@ -18,6 +19,7 @@ import org.json.simple.parser.JSONParser;
 import data.analyzer.UserSchema;
 import interfaz.MainWindow;
 import java.util.ArrayList;
+import org.json.simple.JSONValue;
 /**
  *
  * @author matias
@@ -95,7 +97,10 @@ public class LotRModel extends Model{
                     //si la accion es formato SimpleChoice y existe una acción próxima
                     if ("SimpleChoice".equals(policy.get("format")) && i+1<gameActions.size()){
                         this.evaluateSimpleChoice(action, (LotRGameAction) gameActions.get(i+1), policy, partialProfiles.get((String)action.get("player")));
-                    }                 
+                    }
+                    else if ("SpontaneousChoice".equals(policy.get("format")) && i+1<gameActions.size()){
+                         this.evaluateSpontaneousChoice(action, policy, partialProfiles.get((String)action.get("player")));
+                    }
                 }
                 i++;
             }
@@ -108,6 +113,7 @@ public class LotRModel extends Model{
         }
     };
     
+    //Evaluar accion de formato elección simple
     public void evaluateSimpleChoice(LotRGameAction action, LotRGameAction nextAction, JSONObject policy, SymlogProfile result){
         JSONArray choices = (JSONArray) policy.get("choices");
         int i =0;
@@ -129,6 +135,45 @@ public class LotRModel extends Model{
             this.setRange(choices, result);
         }
         result.sumInteraction();
+    }
+    
+    //Evluar accion de formato elección espontánea
+    public void evaluateSpontaneousChoice(LotRGameAction action,  JSONObject policy, SymlogProfile result){
+        JSONArray fieldLocation = (JSONArray) policy.get("field");
+        
+        int j=0;
+        JSONObject o = (JSONObject)JSONValue.parse(action.getDBObject().toString());
+        String value = null;
+        
+        while (j<fieldLocation.size()){
+            if (o!= null){ 
+                try{
+                    o = (JSONObject)o.get((String)fieldLocation.get(j));
+                }
+                catch (ClassCastException e){
+                    value = (String)o.get((String)fieldLocation.get(j));
+                }         
+                j++;
+            }
+        }
+        //Si se encontro el valor
+        if (value!=null){
+            JSONArray choices = (JSONArray) policy.get("choices");
+            int i =0;
+            boolean found=false;
+            while (i<choices.size() && !found){
+               JSONObject choice = (JSONObject)choices.get(i);
+               //si encuentro la accion en las politicas
+               if ( value.equals((choice).get("action"))){
+                    JSONArray values = (JSONArray)choice.get("result");
+                    result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                    result.addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                    found=true;
+               }
+               i++;
+            }
+            result.sumInteraction();
+        }
     }
     
     public void setRange(JSONArray choices, SymlogProfile profile){

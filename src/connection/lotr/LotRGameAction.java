@@ -7,6 +7,8 @@ package connection.lotr;
 
 import data.analyzer.GameActionSchema;
 import com.mongodb.DBObject;
+import org.json.simple.JSONObject;
+import sun.org.mozilla.javascript.internal.json.JsonParser;
 /**
  *
  * @author matias
@@ -21,6 +23,10 @@ public class LotRGameAction implements GameActionSchema{
     
     public Object get(String attr){
         return action.get(attr);
+    }
+    
+    public DBObject getDBObject(){
+        return action;
     }
     
 }

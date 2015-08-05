@@ -17,6 +17,8 @@ import javax.swing.text.Document;
 
 import connection.lotr.LotRDataInput;
 import connection.lotr.LotRModel;
+import data.analyzer.DataInput;
+import data.analyzer.Model;
 import java.util.Hashtable;
 /**
  *
@@ -25,6 +27,8 @@ import java.util.Hashtable;
 public class MainWindow extends javax.swing.JFrame {
     
     private DataAnalyzer analizador;
+    private DataInput database;
+    private Model model;
     private Hashtable<String,UserSchema> availableUsers;
     private ArrayList<GameSchema> analysisInput;
     
