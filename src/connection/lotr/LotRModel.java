@@ -176,6 +176,11 @@ public class LotRModel extends Model{
         }
     }
     
+    //Evaluar accion de formato con poll
+    public void evaluatePolledChoice(LotRGameAction action,  JSONObject policy, Hashtable<String, SymlogProfile> partialProfiles){
+        
+    }
+    
     public void setRange(JSONArray choices, SymlogProfile profile){
         //agregar al rango para calculo de acciones consideradas
                 int j=0;

@@ -92,7 +92,33 @@
 				"format" : "SpontaneousChoice",
 				"field" : ["data","played","name"],
 				"choices" : [
-					{"action" : "Miruvor",  "result" : [-2,1,0]},
+					{"action" : "Miruvor",  "result" : [-1,1,0]},
+					{"action" : "Staff",  "result" : [0,1,0]},
+					{"action" : "Athelas",  "result" : [0,1,0]},
+					{"action" : "Elessar",  "result" : [1,0,0]},
+					{"action" : "Mithril",  "result" : [1,0,0]},
+					{"action" : "Phial",  "result" : [0,1,0]},
+					{"action" : "Belt",  "result" : [1,0,0]},
+					{"action" : "Lembas",  "result" : [1,0,0]}]
+			},
+			{"name": "PlayCard",
+				"format" : "SpontaneousChoice",
+				"field" : ["data","played","name"],
+				"choices" : [
+					{"action" : "Miruvor",  "result" : [-1,1,0]},
+					{"action" : "Staff",  "result" : [0,1,0]},
+					{"action" : "Athelas",  "result" : [0,1,0]},
+					{"action" : "Elessar",  "result" : [1,0,0]},
+					{"action" : "Mithril",  "result" : [1,0,0]},
+					{"action" : "Phial",  "result" : [0,1,0]},
+					{"action" : "Belt",  "result" : [1,0,0]},
+					{"action" : "Lembas",  "result" : [1,0,0]}]
+			},
+			{"name": "PlayerDealCards",
+				"format" : "PolledChoice",
+				"chosen" : ["player"],
+				"choices" : [
+					{"action" : "Miruvor",  "result" : [-1,1,0]},
 					{"action" : "Staff",  "result" : [0,1,0]},
 					{"action" : "Athelas",  "result" : [0,1,0]},
 					{"action" : "Elessar",  "result" : [1,0,0]},
@@ -101,6 +127,5 @@
 					{"action" : "Belt",  "result" : [1,0,0]},
 					{"action" : "Lembas",  "result" : [1,0,0]}]
 			}
-
 			]
 }
