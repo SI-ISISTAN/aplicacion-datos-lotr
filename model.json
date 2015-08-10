@@ -101,31 +101,159 @@
 					{"action" : "Belt",  "result" : [1,0,0]},
 					{"action" : "Lembas",  "result" : [1,0,0]}]
 			},
-			{"name": "PlayCard",
-				"format" : "SpontaneousChoice",
-				"field" : ["data","played","name"],
-				"choices" : [
-					{"action" : "Miruvor",  "result" : [-1,1,0]},
-					{"action" : "Staff",  "result" : [0,1,0]},
-					{"action" : "Athelas",  "result" : [0,1,0]},
-					{"action" : "Elessar",  "result" : [1,0,0]},
-					{"action" : "Mithril",  "result" : [1,0,0]},
-					{"action" : "Phial",  "result" : [0,1,0]},
-					{"action" : "Belt",  "result" : [1,0,0]},
-					{"action" : "Lembas",  "result" : [1,0,0]}]
-			},
 			{"name": "PlayerDealCards",
 				"format" : "PolledChoice",
 				"chosen" : ["player"],
-				"choices" : [
-					{"action" : "Miruvor",  "result" : [-1,1,0]},
-					{"action" : "Staff",  "result" : [0,1,0]},
-					{"action" : "Athelas",  "result" : [0,1,0]},
-					{"action" : "Elessar",  "result" : [1,0,0]},
-					{"action" : "Mithril",  "result" : [1,0,0]},
-					{"action" : "Phial",  "result" : [0,1,0]},
-					{"action" : "Belt",  "result" : [1,0,0]},
-					{"action" : "Lembas",  "result" : [1,0,0]}]
+				"forward_backward" : {
+					"agree" :  [0,0,1],
+					"disagree" : [0,0,-1]
+				},
+				"up_down": {
+					"self" :{
+						"agree" : [1,-1,0],
+						"disagree": [-1,0,0]
+					},
+					"others" :{
+						"agree" : [-1,1,0],
+						"disagree": [0,0,0]
+					},
+
+				}
+			},
+			{"name": "CommonDiscard",
+				"format" : "PolledChoice",
+				"chosen" : ["discards","alias"],
+				"forward_backward" : {
+					"agree" :  [0,0,1],
+					"disagree" : [0,0,-1]
+				},
+				"up_down": {
+					"self" :{
+						"agree" : [-1,1,0],
+						"disagree": [1,0,0]
+					},
+					"others" :{
+						"agree" : [1,-1,0],
+						"disagree": [0,0,0]
+					},
+
+				}
+			},
+			{"name": "Nazgul Appears",
+				"format" : "PolledChoice",
+				"chosen" : ["alias"],
+				"forward_backward" : {
+					"agree" :  [0,0,1],
+					"disagree" : [0,0,-1]
+				},
+				"up_down": {
+					"self" :{
+						"agree" : [-1,1,0],
+						"disagree": [1,0,0]
+					},
+					"others" :{
+						"agree" : [1,-1,0],
+						"disagree": [0,0,0]
+					},
+
+				}
+			},
+			{"name": "FlyFools",
+				"format" : "PolledChoice",
+				"chosen" : ["alias"],
+				"forward_backward" : {
+					"agree" :  [0,0,1],
+					"disagree" : [0,0,-1]
+				},
+				"up_down": {
+					"self" :{
+						"agree" : [-2,2,0],
+						"disagree": [0,0,0]
+					},
+					"others" :{
+						"agree" : [1,-1,0],
+						"disagree": [0,1,0]
+					},
+
+				}
+			},
+			{"name": "Wormtongue",
+				"format" : "PolledChoice",
+				"chosen" : ["alias"],
+				"forward_backward" : {
+					"agree" :  [0,0,1],
+					"disagree" : [0,0,-1]
+				},
+				"up_down": {
+					"self" :{
+						"agree" : [-1,1,0],
+						"disagree": [1,0,0]
+					},
+					"others" :{
+						"agree" : [1,-1,0],
+						"disagree": [0,0,0]
+					},
+
+				}
+			},
+			{"name": "ForbiddenPool",
+				"format" : "PolledChoice",
+				"chosen" : ["alias"],
+				"forward_backward" : {
+					"agree" :  [0,0,1],
+					"disagree" : [0,0,-1]
+				},
+				"up_down": {
+					"self" :{
+						"agree" : [-2,2,0],
+						"disagree": [0,0,0]
+					},
+					"others" :{
+						"agree" : [1,-1,0],
+						"disagree": [0,1,0]
+					},
+
+				}
+			},
+			{"name": "LordAttack",
+				"format" : "PolledChoice",
+				"chosen" : ["alias"],
+				"forward_backward" : {
+					"agree" :  [0,0,1],
+					"disagree" : [0,0,-1]
+				},
+				"up_down": {
+					"self" :{
+						"agree" : [-1,1,0],
+						"disagree": [1,0,0]
+					},
+					"others" :{
+						"agree" : [1,0,0],
+						"disagree": [0,0,0]
+					},
+
+				}
+			},
+			{"name": "SauronWill",
+				"format" : "PolledChoice",
+				"chosen" : ["alias"],
+				"forward_backward" : {
+					"agree" :  [0,0,1],
+					"disagree" : [0,0,-1]
+				},
+				"up_down": {
+					"self" :{
+						"agree" : [-1,1,0],
+						"disagree": [1,0,0]
+					},
+					"others" :{
+						"agree" : [1,0,0],
+						"disagree": [0,0,0]
+					},
+
+				}
 			}
+
+
 			]
 }

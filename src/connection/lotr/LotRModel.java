@@ -101,6 +101,9 @@ public class LotRModel extends Model{
                     else if ("SpontaneousChoice".equals(policy.get("format")) && i+1<gameActions.size()){
                          this.evaluateSpontaneousChoice(action, policy, partialProfiles.get((String)action.get("player")));
                     }
+                    else if ("PolledChoice".equals(policy.get("format")) && i+1<gameActions.size()){
+                         this.evaluatePolledChoice(action, policy, partialProfiles);
+                    }
                 }
                 i++;
             }
@@ -178,7 +181,95 @@ public class LotRModel extends Model{
     
     //Evaluar accion de formato con poll
     public void evaluatePolledChoice(LotRGameAction action,  JSONObject policy, Hashtable<String, SymlogProfile> partialProfiles){
-        
+        JSONObject obj = (JSONObject)JSONValue.parse(action.getDBObject().toString());
+        JSONObject poll = (JSONObject)obj.get("poll");
+        boolean agreement = false;
+        if (poll!=null){
+            //obtengo la informacion sobre si la poll termino en agreement o no
+            if (poll.get("agreement") != null && (boolean)poll.get("agreement")==true){
+                agreement=true;
+            }
+            
+            //analizar la decision segun parámetros forward-backward
+            JSONArray votes= (JSONArray) poll.get("votes");
+            int v=0;
+            if (votes.size()>2){    //esat comparacion solo tiene sentido si hay mas de 2 votantes
+                while (v<votes.size()){
+                    String user = (String)((JSONObject)votes.get(v)).get("alias");
+                    if ((boolean)((JSONObject)votes.get(v)).get("agree") != agreement){
+                        JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree");
+                        partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                        partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                    }
+                    else{
+                        JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("agree");
+                        partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                        partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                    }
+                    partialProfiles.get(user).sumInteraction();
+                    v++;
+                }
+            }
+            
+            //analizar la decision segun parámetros up-down
+            
+            //obtengo quienes son los jugadores q participan activamente en la decision
+            JSONArray fieldLocation = (JSONArray) policy.get("chosen");  
+            JSONArray sacrifices = (JSONArray)poll.get("actions");
+            if (sacrifices!=null){   
+                ArrayList<String> chosen = new ArrayList<String>();
+                int i=0;
+                while (i<sacrifices.size()){
+                    
+                    Object o= sacrifices.get(i);
+                    this.recursiveFieldSearch(fieldLocation, 0, fieldLocation.size(), o, chosen);
+                   
+                i++;
+                }
+                            
+                //analizo segun up-down
+                    JSONObject up_down_policy = (JSONObject)policy.get("up_down");
+                    int votenum=0;
+                    while (votenum<votes.size()){
+                        JSONObject vote = (JSONObject)votes.get(votenum);
+                        String voter = (String)vote.get("alias");
+                        int c=0;
+                        boolean found=false;
+                        while (!found && c<chosen.size()){
+                            if (voter.equals(chosen.get(c))){
+                                found=true;
+                            }
+                            c++;
+                        }
+                        if (found){
+                            if ((boolean)vote.get("agree")){
+                                JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("self")).get("agree");
+                                partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                                partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                            }
+                            else{
+                                JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("self")).get("disagree");
+                                partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                                partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                            }
+                        }
+                        else{
+                            if ((boolean)vote.get("agree")){
+                                JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("others")).get("agree");
+                                partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                                partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                            }
+                            else{
+                                JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("others")).get("disagree");
+                                partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                                partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                            }
+                        }
+                        partialProfiles.get(voter).sumInteraction();
+                        votenum++;
+                    }              
+            }              
+        }
     }
     
     public void setRange(JSONArray choices, SymlogProfile profile){
@@ -217,7 +308,26 @@ public class LotRModel extends Model{
             profile.addToMax(maxUD, maxPN, maxFB);
     }
     
-    public void evaluateAction(LotRGameAction action, SymlogProfile result){
-        
+    public void recursiveFieldSearch(JSONArray fieldLocation, int index, int limit, Object o, ArrayList<String> chosen){
+        if (index<limit-1){
+            if (o!= null){
+                    if (o instanceof JSONArray){
+                        int it=0;
+                        JSONArray arr = ((JSONArray)o);
+                        while (it<arr.size()){
+                            this.recursiveFieldSearch(fieldLocation,index+1,limit,arr.get(it),chosen);
+                            it++;
+                        }
+                    }
+                    else if (o instanceof JSONObject){
+                        JSONObject ob = ((JSONObject)o);
+                        this.recursiveFieldSearch(fieldLocation,index+1,limit,ob,chosen);
+                    }
+            }
+        }
+        else if (index==limit-1){
+            String value = (String)((JSONObject)o).get((String)fieldLocation.get(index));
+            chosen.add(value);
+        }
     }
 };
