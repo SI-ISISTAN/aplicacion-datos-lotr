@@ -197,15 +197,20 @@ public class LotRModel extends Model{
                 while (v<votes.size()){
                     String user = (String)((JSONObject)votes.get(v)).get("alias");
                     if ((boolean)((JSONObject)votes.get(v)).get("agree") != agreement){
+                        
                         JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree");
-                        partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
-                        partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                        partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));     
+                        //partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                     }
                     else{
                         JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("agree");
                         partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
-                        partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                        //partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                     }
+                    JSONArray choices = new JSONArray();
+                    choices.add((JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree"));
+                    choices.add((JSONArray)((JSONObject)policy.get("forward_backward")).get("agree"));
+                    this.setRangePoll(choices, partialProfiles.get(user));
                     partialProfiles.get(user).sumInteraction();
                     v++;
                 }
@@ -242,16 +247,21 @@ public class LotRModel extends Model{
                             c++;
                         }
                         if (found){
+                            
                             if ((boolean)vote.get("agree")){
                                 JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("self")).get("agree");
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
-                                partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                                //partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
                             else{
                                 JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("self")).get("disagree");
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
-                                partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                                //partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
+                            JSONArray choices = new JSONArray();
+                            choices.add((JSONArray)((JSONObject)up_down_policy.get("self")).get("disagree"));
+                            choices.add((JSONArray)((JSONObject)up_down_policy.get("self")).get("agree"));
+                            this.setRangePoll(choices, partialProfiles.get(voter));
                         }
                         else{
                             if ((boolean)vote.get("agree")){
@@ -264,6 +274,10 @@ public class LotRModel extends Model{
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                                 partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
+                            JSONArray choices = new JSONArray();
+                            choices.add((JSONArray)((JSONObject)up_down_policy.get("others")).get("disagree"));
+                            choices.add((JSONArray)((JSONObject)up_down_policy.get("others")).get("agree"));
+                            this.setRangePoll(choices, partialProfiles.get(voter));
                         }
                         partialProfiles.get(voter).sumInteraction();
                         votenum++;
@@ -283,6 +297,42 @@ public class LotRModel extends Model{
                 long minFB= 99999;
                 while (j<choices.size()){
                     JSONArray othvalues = (JSONArray)((JSONObject)choices.get(j)).get("result");
+                    if ((long)othvalues.get(0) > maxUD){
+                        maxUD = (long)othvalues.get(0);
+                    }
+                    if ((long)othvalues.get(0) < minUD){
+                        minUD = (long)othvalues.get(0);
+                    }
+                    if ((long)othvalues.get(1) > maxPN){
+                        maxPN = (long)othvalues.get(1);
+                    }
+                    if ((long)othvalues.get(1) < minPN){
+                        minPN = (long)othvalues.get(1);
+                    }
+                    if ((long)othvalues.get(2) > maxFB){
+                        maxFB = (long)othvalues.get(2);
+                    }
+                    if ((long)othvalues.get(2) < minFB){
+                        minFB = (long)othvalues.get(2);
+                    }
+                    
+                    j++;     
+                }
+            profile.addToMin(minUD, minPN, minFB);
+            profile.addToMax(maxUD, maxPN, maxFB);
+    }
+    
+    public void setRangePoll(JSONArray choices, SymlogProfile profile){
+        //agregar al rango para calculo de acciones consideradas
+                int j=0;
+                long maxUD = -99999;
+                long maxPN = -99999;
+                long maxFB= -99999;
+                long minUD = 99999;
+                long minPN = 99999;
+                long minFB= 99999;
+                while (j<choices.size()){
+                    JSONArray othvalues = (JSONArray)(choices.get(j));
                     if ((long)othvalues.get(0) > maxUD){
                         maxUD = (long)othvalues.get(0);
                     }
