@@ -20,6 +20,7 @@ import connection.lotr.LotRModel;
 import data.analyzer.DataInput;
 import data.analyzer.InvalidInputException;
 import data.analyzer.Model;
+import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -65,6 +66,9 @@ public class MainWindow extends javax.swing.JFrame {
         
         FileFilter filter = new FileNameExtensionFilter("Archivo JSON","json");
         fc.setFileFilter(filter);
+        
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        fc.setCurrentDirectory(workingDirectory);
     }
 
     /**
@@ -112,7 +116,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        cabezaButton.setText("Analizar (cabeza)");
+        cabezaButton.setText("Analizar");
         cabezaButton.setEnabled(false);
         cabezaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -199,16 +203,29 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void getGamesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getGamesButtonActionPerformed
-
-       analysisInput = analizador.getUnanalizedGames();
-        this.consolePrint("Se han hallado "+(analysisInput.size())+" partidas sin analizar.");
-        if (analysisInput.size()>0){
-            cabezaButton.setEnabled(true);
+        try {
+            analizador = new DataAnalyzer(database, model);
+            analysisInput = analizador.getUnanalizedGames();
+            ArrayList<UserSchema> users = analizador.getUsers();
+            String [] userIDs = new String[users.size()];
+            int i =0;
+            for (UserSchema user : users){
+                availableUsers.put(user.getKeyAttribute(),user);
+                userIDs[i]= user.getKeyAttribute();
+                i++;
+            }
+            this.consolePrint("Se han hallado "+(analysisInput.size())+" partidas sin analizar.");
+            if (analysisInput.size()>0){
+                cabezaButton.setEnabled(true);
+            }
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_getGamesButtonActionPerformed
 
     private void cabezaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cabezaButtonActionPerformed
+        this.consolePrint("\n ---------------------------------------------");
         for (GameSchema game : analysisInput){
             analizador.getModel().evaluateGame(game);
         }
@@ -222,20 +239,8 @@ public class MainWindow extends javax.swing.JFrame {
     private void loadJSONButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadJSONButtonActionPerformed
         int returnVal = fc.showOpenDialog(this);
         if (fc.getSelectedFile()!=null){
-            try {
-            analizador = new DataAnalyzer(database, new LotRModel(this,fc.getSelectedFile().getAbsolutePath()));
-            ArrayList<UserSchema> users = analizador.getUsers();
-        String [] userIDs = new String[users.size()];
-        int i =0;
-        for (UserSchema user : users){
-            availableUsers.put(user.getKeyAttribute(),user);
-            userIDs[i]= user.getKeyAttribute();
-            i++;
-        }
-        getGamesButton.setEnabled(true);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            model =  new LotRModel(this,fc.getSelectedFile().getAbsolutePath());
+            getGamesButton.setEnabled(true);
         }
         
     }//GEN-LAST:event_loadJSONButtonActionPerformed

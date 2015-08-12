@@ -133,7 +133,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="cabezaButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Analizar (cabeza)"/>
+        <Property name="text" type="java.lang.String" value="Analizar"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
