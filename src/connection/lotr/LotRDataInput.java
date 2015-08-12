@@ -8,20 +8,24 @@ package connection.lotr;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteResult;
+import com.mongodb.CommandFailureException;
 import com.mongodb.Cursor;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.ParallelScanOptions;
 import com.mongodb.ServerAddress;
+import data.analyzer.ConnectionData;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import data.analyzer.UserSchema;
 import data.analyzer.GameSchema;
 import data.analyzer.DataInput;
+import data.analyzer.InvalidInputException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +33,7 @@ import java.util.logging.Logger;
  *
  * @author matias
  */
-public class LotRDataInput implements DataInput{
+public class LotRDataInput extends DataInput{
     
     private DB db;
     
@@ -37,13 +41,32 @@ public class LotRDataInput implements DataInput{
 
     };
     
-    public void connectToSource(){
+    
+    public void connectToSourceLocal (String databaseName) throws InvalidInputException{
         MongoClient mongoClient;
         try {
             mongoClient = new MongoClient( "localhost" );
-            db = mongoClient.getDB( "lotr" );
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(LotRDataInput.class.getName()).log(Level.SEVERE, null, ex);
+            db = mongoClient.getDB( databaseName );
+        } catch (UnknownHostException|IllegalArgumentException ex) {
+            throw new InvalidInputException("Datos de conexión inválidos.");
+        }
+    }
+    
+    public void connectToSourceRemote (String databaseName, String URIString) throws InvalidInputException{
+        MongoClient mongoClient;
+        String textUri = URIString;
+        
+        try{
+            MongoClientURI uri = new MongoClientURI(textUri);
+            try {
+                mongoClient = new MongoClient(uri);
+                db = mongoClient.getDB( databaseName );
+            } catch (UnknownHostException ex) {
+                throw new InvalidInputException("Eh vieja");
+            }
+        }
+        catch (IllegalArgumentException ex1){
+            throw new InvalidInputException("Eh vieja");
         }
         
     }

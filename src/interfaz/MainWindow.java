@@ -18,14 +18,21 @@ import javax.swing.text.Document;
 import connection.lotr.LotRDataInput;
 import connection.lotr.LotRModel;
 import data.analyzer.DataInput;
+import data.analyzer.InvalidInputException;
 import data.analyzer.Model;
 import java.util.Hashtable;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  *
  * @author matias
  */
 public class MainWindow extends javax.swing.JFrame {
     
+    private final JFileChooser fc = new JFileChooser();
     private DataAnalyzer analizador;
     private DataInput database;
     private Model model;
@@ -41,12 +48,23 @@ public class MainWindow extends javax.swing.JFrame {
            exc.printStackTrace();
         }
     }
+    
+    public void setInput(DataInput d){
+        database=d;
+    }
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
         availableUsers = new Hashtable<String,UserSchema>();
+        List<String> ls = new ArrayList<String>(); 
+        
         initComponents();
+        ls.add("Modelo 1");
+        modelOptions.setModel(new DefaultComboBoxModel(ls.toArray()));
+        
+        FileFilter filter = new FileNameExtensionFilter("Archivo JSON","json");
+        fc.setFileFilter(filter);
     }
 
     /**
@@ -60,14 +78,15 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        modelOptions = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         consoleArea = new javax.swing.JTextPane();
         getGamesButton = new javax.swing.JButton();
         cabezaButton = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        loadJSONButton = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Analizador de Datos - LotR");
@@ -78,17 +97,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel3.setText("Modelo de análisis");
         jLabel3.setName(""); // NOI18N
 
-        jComboBox2.setEnabled(false);
-
-        jButton1.setText("Conectar a DB");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Analizar");
-        jButton2.setEnabled(false);
+        modelOptions.setEnabled(false);
 
         jLabel1.setText("Resultados");
 
@@ -111,6 +120,28 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("Conectar a base de datos");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        loadJSONButton.setText("Cargar JSON para modelo");
+        loadJSONButton.setEnabled(false);
+        loadJSONButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadJSONButtonActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Limpiar pantalla");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -118,72 +149,55 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(cabezaButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(getGamesButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)))
-                .addGap(42, 42, 42)
+                    .addComponent(getGamesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(loadJSONButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(modelOptions, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cabezaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(231, 231, 231))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jButton1)
+                        .addComponent(jButton3)
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(modelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(loadJSONButton)
+                        .addGap(27, 27, 27)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(getGamesButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cabezaButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24)
-                        .addComponent(jButton2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(52, Short.MAX_VALUE))
+                        .addComponent(cabezaButton))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton4)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            analizador = new DataAnalyzer(new LotRDataInput(), new LotRModel(this));
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        ArrayList<UserSchema> users = analizador.getUsers();
-        String [] userIDs = new String[users.size()];
-        int i =0;
-        for (UserSchema user : users){
-            availableUsers.put(user.getKeyAttribute(),user);
-            userIDs[i]= user.getKeyAttribute();
-            i++;
-        }
-        if (users.size()>0){
-            //deprectaed
-        }
-        getGamesButton.setEnabled(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
+    
     private void getGamesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getGamesButtonActionPerformed
 
        analysisInput = analizador.getUnanalizedGames();
@@ -200,6 +214,41 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cabezaButtonActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        InputWindow w1 = new InputWindow(this);
+        w1.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void loadJSONButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadJSONButtonActionPerformed
+        int returnVal = fc.showOpenDialog(this);
+        if (fc.getSelectedFile()!=null){
+            try {
+            analizador = new DataAnalyzer(database, new LotRModel(this,fc.getSelectedFile().getAbsolutePath()));
+            ArrayList<UserSchema> users = analizador.getUsers();
+        String [] userIDs = new String[users.size()];
+        int i =0;
+        for (UserSchema user : users){
+            availableUsers.put(user.getKeyAttribute(),user);
+            userIDs[i]= user.getKeyAttribute();
+            i++;
+        }
+        getGamesButton.setEnabled(true);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_loadJSONButtonActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        consoleArea.setText("");
+    }//GEN-LAST:event_jButton4ActionPerformed
+    
+    public void enableModelLoad(){
+        modelOptions.setEnabled(true);
+        loadJSONButton.setEnabled(true);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -242,12 +291,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton cabezaButton;
     private javax.swing.JTextPane consoleArea;
     private javax.swing.JButton getGamesButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton loadJSONButton;
+    private javax.swing.JComboBox modelOptions;
     // End of variables declaration//GEN-END:variables
 }

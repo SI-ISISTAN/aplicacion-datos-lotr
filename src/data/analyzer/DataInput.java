@@ -12,9 +12,16 @@ import java.util.ArrayList;
  *
  * @author matias
  */
-public interface DataInput {
+public abstract class DataInput {
     
-    public abstract void connectToSource();
+    public void connectToSource(ConnectionData data) throws InvalidInputException{
+        try{
+            data.connect(this);
+        }
+        catch (InvalidInputException ex){
+            throw ex;
+        }
+    }
     
     public abstract ArrayList<UserSchema> getUsers();
     

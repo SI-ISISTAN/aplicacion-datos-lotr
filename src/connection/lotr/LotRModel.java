@@ -28,15 +28,14 @@ public class LotRModel extends Model{
     private Hashtable<String, JSONObject> evaluationPolicy;
     private MainWindow window;
     
-    public LotRModel(MainWindow w){
+    public LotRModel(MainWindow w, String JSONpath){
         super();
         
         window = w;
-        window.consolePrint("Conectado a la base de datos con éxito. \n ---------------------------------------------");
         window.consolePrint("Leyendo modelo de datos cargado...");
         JSONParser parser = new JSONParser();
          try {
-            Object obj = parser.parse(new FileReader("model.json"));
+            Object obj = parser.parse(new FileReader(JSONpath));
             JSONObject loadedModel = (JSONObject) obj;
             
             JSONArray policies = (JSONArray) loadedModel.get("actions");

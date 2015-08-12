@@ -23,7 +23,7 @@ public class DataAnalyzer {
     public DataAnalyzer(DataInput data, Model m) throws UnknownHostException{
        model=m;
        dataInput = data;
-       dataInput.connectToSource();
+       //dataInput.connectToSource();
     }
   
 
