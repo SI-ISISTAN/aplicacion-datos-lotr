@@ -1,4 +1,5 @@
 {
+"modelName" : "Modelo 1",
 "actions" : [{"name": "Preparations",
 				"format" : "SimpleChoice",
 				"choices" : [

@@ -102,11 +102,14 @@ public class LotRDataInput extends DataInput{
         return gamesList;
     }
     
-    public void setAnalyzedGame(String gameID){
+    public void setAnalyzedGame(String gameID, String modelName){
         DBCollection gamesCollection = db.getCollection("games");
         
         BasicDBObject newDocument = new BasicDBObject();
-	newDocument.append("$set", new BasicDBObject().append("analyzed", true));
+        BasicDBObject newDocument2 = new BasicDBObject();
+        newDocument2.append("analyzed", true);
+        newDocument2.append("model", modelName);
+	newDocument.append("$set", newDocument2);
 			
 	BasicDBObject searchQuery = new BasicDBObject().append("gameID", gameID);
 
@@ -118,17 +121,21 @@ public class LotRDataInput extends DataInput{
         DBCollection gamesCollection = db.getCollection("games");
         
         BasicDBObject newDocument = new BasicDBObject();
-	newDocument.append("$set", new BasicDBObject().append("analyzed", false));
-			
+        BasicDBObject newDocument2 = new BasicDBObject();
+        newDocument2.append("analyzed", false);
+        newDocument2.append("model", null);
+	newDocument.append("$set", newDocument2);
+        
+        
 	DBCursor games = gamesCollection.find();
         try {
             while(games.hasNext()) {
-                gamesCollection.update(games.next(), newDocument);
+               gamesCollection.update(games.next(), newDocument);
             }
         } finally {
             games.close();
         }
-
+                
 	
     }
     

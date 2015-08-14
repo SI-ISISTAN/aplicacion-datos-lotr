@@ -28,17 +28,19 @@ public class LotRModel extends Model{
     private Hashtable<String, JSONObject> evaluationPolicy;
     private MainWindow window;
     private LotRDataInput database;
+    private String modelName;
     
     public LotRModel(MainWindow w, LotRDataInput inp, String JSONpath){
         super();
         database=inp;
         window = w;
+        modelName=null;
         window.consolePrint("Leyendo modelo de datos cargado...");
         JSONParser parser = new JSONParser();
          try {
             Object obj = parser.parse(new FileReader(JSONpath));
             JSONObject loadedModel = (JSONObject) obj;
-            
+            modelName = (String)loadedModel.get("modelName");
             JSONArray policies = (JSONArray) loadedModel.get("actions");
             int i = 0;
             evaluationPolicy = new Hashtable<String,JSONObject>();
@@ -112,7 +114,7 @@ public class LotRModel extends Model{
             //guardo cada perfil parcial en la base de datos, en la coleccion de usuarios
             this.savePartialProfiles(partialProfiles, userIDs);
             //guardo en el campo de la partida en la base de datos que ya analice la partida
-            database.setAnalyzedGame((String)game.get("gameID"));
+            database.setAnalyzedGame((String)game.get("gameID"), modelName);
             //imprimo resultado
             for (String key : partialProfiles.keySet()) {
                 window.consolePrint(key);
