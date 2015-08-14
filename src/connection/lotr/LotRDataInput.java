@@ -10,6 +10,7 @@ import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteResult;
 import com.mongodb.CommandFailureException;
 import com.mongodb.Cursor;
+
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -21,7 +22,7 @@ import com.mongodb.ServerAddress;
 import data.analyzer.ConnectionData;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-
+import org.bson.Document;
 import data.analyzer.UserSchema;
 import data.analyzer.GameSchema;
 import data.analyzer.DataInput;
@@ -62,11 +63,11 @@ public class LotRDataInput extends DataInput{
                 mongoClient = new MongoClient(uri);
                 db = mongoClient.getDB( databaseName );
             } catch (UnknownHostException ex) {
-                throw new InvalidInputException("Eh vieja");
+                throw new InvalidInputException("Error de conexión.");
             }
         }
         catch (IllegalArgumentException ex1){
-            throw new InvalidInputException("Eh vieja");
+            throw new InvalidInputException("Error de conexión.");
         }
         
     }
@@ -99,7 +100,37 @@ public class LotRDataInput extends DataInput{
             games.close();
         }
         return gamesList;
-    } 
+    }
+    
+    public void setAnalyzedGame(String gameID){
+        DBCollection gamesCollection = db.getCollection("games");
+        
+        BasicDBObject newDocument = new BasicDBObject();
+	newDocument.append("$set", new BasicDBObject().append("analyzed", true));
+			
+	BasicDBObject searchQuery = new BasicDBObject().append("gameID", gameID);
+
+	gamesCollection.update(searchQuery, newDocument);
+        
+    }
+    
+    public void resetAnalysis(){
+        DBCollection gamesCollection = db.getCollection("games");
+        
+        BasicDBObject newDocument = new BasicDBObject();
+	newDocument.append("$set", new BasicDBObject().append("analyzed", false));
+			
+	DBCursor games = gamesCollection.find();
+        try {
+            while(games.hasNext()) {
+                gamesCollection.update(games.next(), newDocument);
+            }
+        } finally {
+            games.close();
+        }
+
+	
+    }
     
     public ArrayList<GameSchema> getGamesForUser(String userID){
         DBCollection gamesCollection = db.getCollection("games");

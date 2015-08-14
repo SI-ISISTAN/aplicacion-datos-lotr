@@ -23,7 +23,6 @@ public class DataAnalyzer {
     public DataAnalyzer(DataInput data, Model m) throws UnknownHostException{
        model=m;
        dataInput = data;
-       //dataInput.connectToSource();
     }
   
 
@@ -46,7 +45,13 @@ public class DataAnalyzer {
        }
        return unanalyzed;
     }
-
+    
+    public void analyzeGames(ArrayList<GameSchema> games){
+         for (GameSchema game : games){
+            model.evaluateGame(game);
+        }
+    }
+    
     public Model getModel() {
         return model;
     }

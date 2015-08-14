@@ -27,10 +27,11 @@ import org.json.simple.JSONValue;
 public class LotRModel extends Model{
     private Hashtable<String, JSONObject> evaluationPolicy;
     private MainWindow window;
+    private LotRDataInput database;
     
-    public LotRModel(MainWindow w, String JSONpath){
+    public LotRModel(MainWindow w, LotRDataInput inp, String JSONpath){
         super();
-        
+        database=inp;
         window = w;
         window.consolePrint("Leyendo modelo de datos cargado...");
         JSONParser parser = new JSONParser();
@@ -75,12 +76,14 @@ public class LotRModel extends Model{
         //chequea si el juego es digno de evaluacion
         LotRGame game = (LotRGame)g;
         if (this.isAnalyzable(game)){
-            //Para cada jugador, instancia un nuevo perfil de Symlog hasheado por UserID
+            //Para cada jugador, instancia un nuevo perfil de Symlog hasheado por alias; tener una hash con el par alias - userID
             Hashtable<String, SymlogProfile> partialProfiles = new Hashtable<String, SymlogProfile>();
+            Hashtable<String, String> userIDs = new Hashtable<String, String>();
             BasicDBList players = (BasicDBList) game.get("players");
             DBObject[] playersArr = players.toArray(new DBObject[0]);
             for(DBObject p : playersArr) {
               partialProfiles.put((String)p.get("alias"), new SymlogProfile());
+              userIDs.put((String)p.get("alias"), (String)p.get("userID"));
             }
             window.consolePrint("Analizo nueva partida. Game ID: "+game.get("gameID"));
             window.consolePrint("---------------------------------------------");
@@ -106,6 +109,10 @@ public class LotRModel extends Model{
                 }
                 i++;
             }
+            //guardo cada perfil parcial en la base de datos, en la coleccion de usuarios
+            this.savePartialProfiles(partialProfiles, userIDs);
+            //guardo en el campo de la partida en la base de datos que ya analice la partida
+            database.setAnalyzedGame((String)game.get("gameID"));
             //imprimo resultado
             for (String key : partialProfiles.keySet()) {
                 window.consolePrint(key);
@@ -378,5 +385,9 @@ public class LotRModel extends Model{
             String value = (String)((JSONObject)o).get((String)fieldLocation.get(index));
             chosen.add(value);
         }
+    }
+    
+    public void savePartialProfiles(Hashtable<String,SymlogProfile> partialProfiles, Hashtable<String,String> userIDs){
+        
     }
 };
