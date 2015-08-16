@@ -117,7 +117,7 @@ public class LotRDataInput extends DataInput{
         
     }
     
-    public void resetAnalysis(){
+    public void resetAnalysis(String modelName){
         DBCollection gamesCollection = db.getCollection("games");
         
         BasicDBObject newDocument = new BasicDBObject();
@@ -135,7 +135,27 @@ public class LotRDataInput extends DataInput{
         } finally {
             games.close();
         }
-                
+        
+        //Borro los analisis que se hayan llevado a cabo con este modelo
+        DBCollection usersCollection = db.getCollection("users");
+        DBCursor users = usersCollection.find();
+        try {
+            while(users.hasNext()) {
+               DBObject user = users.next();
+               BasicDBObject symlog = (BasicDBObject) user.get("symlog");
+               if (symlog!=null){
+                   if (modelName.equals(symlog.get("model"))){
+                       String userID = (String)((BasicDBObject)user.get("local")).get("userID");
+                        BasicDBObject match = new BasicDBObject("local", new BasicDBObject("userID", userID));
+                        BasicDBObject update2 = new BasicDBObject("symlog", new BasicDBObject());
+                        usersCollection.update(match, new BasicDBObject("$unset", update2));
+                   }
+               }
+            }
+        } finally {
+            users.close();
+        }
+  
 	
     }
     
@@ -152,5 +172,21 @@ public class LotRDataInput extends DataInput{
             games.close();
         }
         return gamesList;
-    } 
+    }
+    
+    public DBObject getUser(String userID){
+        DBCollection usersCollection = db.getCollection("users");
+        BasicDBObject subQuery = new BasicDBObject("userID",userID);
+        BasicDBObject query = new BasicDBObject("local",subQuery);
+        DBObject user = usersCollection.findOne(query);
+        return user;
+    }
+    
+    public void updateSymlog(String userID, BasicDBObject newProfile){
+        DBCollection usersCollection = db.getCollection("users");
+        BasicDBObject subQuery = new BasicDBObject("userID",userID);
+        BasicDBObject query = new BasicDBObject("local",subQuery);
+        DBObject user = usersCollection.findOne(query);
+        usersCollection.update(user, new BasicDBObject("$set" , new BasicDBObject("symlog",newProfile) ));
+    }
 }

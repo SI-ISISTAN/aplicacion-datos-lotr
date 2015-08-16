@@ -295,6 +295,7 @@ public class MainWindow extends javax.swing.JFrame {
         if (fc.getSelectedFile()!=null){
             model =  new LotRModel(this,(LotRDataInput)database,fc.getSelectedFile().getAbsolutePath());
             getGamesButton.setEnabled(true);
+            resetAnalysisButton.setEnabled(true);
         }
         
     }//GEN-LAST:event_loadJSONButtonActionPerformed
@@ -304,16 +305,15 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void resetAnalysisButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetAnalysisButtonActionPerformed
-        ((LotRDataInput)database).resetAnalysis();
+        ((LotRDataInput)database).resetAnalysis(((LotRModel)model).getModelName());
         this.consolePrint("---------------------------------------------");
         this.consolePrint("Se ha reseteado el análisis.");
-        this.consolePrint("---------------------------------------------\n ");
     }//GEN-LAST:event_resetAnalysisButtonActionPerformed
     
     public void enableModelLoad(){
         modelOptions.setEnabled(true);
         loadJSONButton.setEnabled(true);
-        resetAnalysisButton.setEnabled(true);
+        
     }
     
     /**

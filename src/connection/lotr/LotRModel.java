@@ -390,6 +390,85 @@ public class LotRModel extends Model{
     }
     
     public void savePartialProfiles(Hashtable<String,SymlogProfile> partialProfiles, Hashtable<String,String> userIDs){
-        
+        for (String key : partialProfiles.keySet()){
+            DBObject user =database.getUser(userIDs.get(key));
+            if (user!=null){
+                BasicDBObject symlog = (BasicDBObject)user.get("symlog");
+                SymlogProfile partial = partialProfiles.get(key);
+                ArrayList<Double> normalized = partialProfiles.get(key).getNormalizedProfile();
+                boolean addNewModel = false;
+                if (symlog!=null){
+                    if (modelName.equals(symlog.get("model"))){
+                        //Construyo el perfil agregando las interacciones que tengo
+                        //Revisar esta pija
+                        double up_down = (double)symlog.get("up_down");
+                        double positive_negative = (double)symlog.get("positive_negative");
+                        double forward_backward = (double)symlog.get("forward_backward");
+                        long interactions = (long)symlog.get("interactions");
+                        //po que???
+                        if (interactions>0 && partial.getInteractions()>0){ 
+                            long totalInteractions = interactions+partial.getInteractions();
+                            double new_ud = ((double)(up_down*interactions)/totalInteractions + (double)(normalized.get(0)*partial.getInteractions())/totalInteractions);
+                            double new_pn = ((double)(positive_negative*interactions)/totalInteractions  + (double)(normalized.get(1)*partial.getInteractions())/totalInteractions );
+                            double new_fb = ((double)(forward_backward*interactions)/totalInteractions  + (double)(normalized.get(2)*partial.getInteractions())/totalInteractions );
+                            //Agrego un control para evitar error de redondeo en operaciones con double
+                            if (new_ud<0){
+                                new_ud=0;
+                            }
+                            if (new_ud>1){
+                                new_ud=1;
+                            }
+                            if (new_pn<0){
+                                new_pn=0;
+                            }
+                            if (new_pn>1){
+                                new_pn=1;
+                            }
+                            if (new_fb<0){
+                                new_fb=0;
+                            }
+                            if (new_fb>1){
+                                new_fb=1;
+                            }
+                            //Actualizar los valores en la db
+                            BasicDBObject document = new BasicDBObject();
+                            document.put("model", modelName);
+                            document.put("up_down", new_ud);
+                            document.put("positive_negative", new_pn);
+                            document.put("forward_backward", new_fb);
+                            document.put("interactions", totalInteractions);
+                            database.updateSymlog(userIDs.get(key),document);
+                        }
+                    }
+                    else{
+                        addNewModel=true;
+                    }
+                }
+                else{
+                    addNewModel=true;
+                }
+                if (addNewModel){
+                    System.out.println("addnewmodel");
+                    if (partial.getInteractions()>0){
+                        BasicDBObject document = new BasicDBObject();
+                        document.put("model", modelName);
+                        document.put("up_down", ((double)normalized.get(0)));
+                        document.put("positive_negative", (double)normalized.get(1));
+                        document.put("forward_backward", (double)normalized.get(2));
+                        document.put("interactions", partial.getInteractions());
+                        database.updateSymlog(userIDs.get(key),document);
+                    }
+                }
+            }
+            else{
+                System.out.println("No encuentro al user de ID "+userIDs.get(key));
+            }
+        }
     }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+
 };
