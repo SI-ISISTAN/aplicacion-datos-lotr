@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileFilter;
@@ -44,6 +45,10 @@ public class MainWindow extends javax.swing.JFrame {
     private Hashtable<String,UserSchema> availableUsers;
     private ArrayList<GameSchema> analysisInput;
     private ArrayList<BasicDBObject> currentChat;
+    
+    //Variables extra para chequeos de estado
+    private int prevChatIndex = 0;
+    
     
     
     public void consolePrint(String s) {
@@ -66,7 +71,6 @@ public class MainWindow extends javax.swing.JFrame {
         List<String> ls = new ArrayList<String>(); 
         
         initComponents();
-        
         //opciones de configuracion y carga hard
         messageList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ls.add("Modelo 1");
@@ -244,6 +248,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel5.setText("Cargar chat");
 
+        chatList.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chatListItemStateChanged(evt);
+            }
+        });
         chatList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chatListActionPerformed(evt);
@@ -283,6 +292,16 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel9.setText("Categoria");
 
         IPAButton.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No categorizado", "C1 - Muestra Solidaridad", "C2 - Muestra descarga de tensión", "C3 - Muestra aceptación pasiva", "C4 - Da sugerencia", "C5 - Da opinión", "C6 - Da información", "C7 - Pide orientación", "C8 - Pide opinión", "C9 - Pide sugerencia", "C10 - Está en desacuerdo", "C11 - Muestra tensión", "C12 - Muestra antagonismo", "C13 - Otra categoría 1", "C14 - Otra categoría 2", "C15 - Otra categoría 3", "C16 - Otra categoría 4" }));
+        IPAButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                IPAButtonMouseClicked(evt);
+            }
+        });
+        IPAButton.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                IPAButtonItemStateChanged(evt);
+            }
+        });
         IPAButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 IPAButtonActionPerformed(evt);
@@ -317,23 +336,21 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(prevButton, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(14, Short.MAX_VALUE))
-                    .addComponent(IPAButton, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(playerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(prevButton, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(IPAButton, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -442,9 +459,9 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void resetAnalysisButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetAnalysisButtonActionPerformed
-        ((LotRDataInput)database).resetAnalysis(((LotRModel)model).getModelName());
-        this.consolePrint("---------------------------------------------");
+        ((LotRDataInput)database).resetAnalysis(((LotRModel)model).getModelName());  
         this.consolePrint("Se ha reseteado el análisis.");
+        this.consolePrint("---------------------------------------------");
     }//GEN-LAST:event_resetAnalysisButtonActionPerformed
 
     private void messageListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_messageListValueChanged
@@ -464,22 +481,23 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void chatListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatListActionPerformed
         //cargo los chats de la db
-        DefaultListModel listmodel = new DefaultListModel();
-        if (chatList.getSelectedItem()!=null){
-            currentChat = ((LotRDataInput)database).getChatMessages(chatList.getSelectedItem().toString());
-            int i=0;
-            while (i < currentChat.size()){
-                if (((BasicDBObject)currentChat.get(i)).get("IPA")!=null && ((BasicDBObject)currentChat.get(i)).get("IPADescription")!=null){
-                    listmodel.addElement(i+" (Analizado)");
+            DefaultListModel listmodel = new DefaultListModel();
+            if (chatList.getSelectedItem()!=null){
+                currentChat = ((LotRDataInput)database).getChatMessages(chatList.getSelectedItem().toString());
+                int i=0;
+                while (i < currentChat.size()){
+                    if (((BasicDBObject)currentChat.get(i)).get("IPA")!=null && ((BasicDBObject)currentChat.get(i)).get("IPADescription")!=null){
+                        listmodel.addElement(i+" (Analizado)");
+                    }
+                    else{
+                        listmodel.addElement(i);
+                    }
+                    i++;
                 }
-                else{
-                    listmodel.addElement(i);
-                }
-                i++;
+                 messageList.setModel(listmodel);
+                 messageList.setSelectedIndex(0);
             }
-             messageList.setModel(listmodel);
-             messageList.setSelectedIndex(0);
-        }
+        
     }//GEN-LAST:event_chatListActionPerformed
 
     private void prevButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prevButtonActionPerformed
@@ -495,6 +513,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void IPAButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IPAButtonActionPerformed
+        
         DefaultListModel listModel = (DefaultListModel)messageList.getModel();
         if (currentChat.get(messageList.getSelectedIndex()).get("IPA")==null){
             if (IPAButton.getSelectedIndex()!=0){
@@ -521,7 +540,22 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         ((LotRDataInput)database).saveChatAnalysis(chatList.getSelectedItem().toString(), currentChat);
+        JOptionPane.showMessageDialog(this, "Se han guardado todos los cambios para este chat.");
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void IPAButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_IPAButtonMouseClicked
+
+ 
+    }//GEN-LAST:event_IPAButtonMouseClicked
+
+    private void IPAButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_IPAButtonItemStateChanged
+        
+    }//GEN-LAST:event_IPAButtonItemStateChanged
+
+    private void chatListItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chatListItemStateChanged
+
+    }//GEN-LAST:event_chatListItemStateChanged
+                 
     
     public void enableModelLoad(){
         modelOptions.setEnabled(true);

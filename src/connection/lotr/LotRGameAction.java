@@ -8,7 +8,6 @@ package connection.lotr;
 import data.analyzer.GameActionSchema;
 import com.mongodb.DBObject;
 import org.json.simple.JSONObject;
-import sun.org.mozilla.javascript.internal.json.JsonParser;
 /**
  *
  * @author matias
