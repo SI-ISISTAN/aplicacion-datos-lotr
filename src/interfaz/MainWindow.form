@@ -410,7 +410,7 @@
             <Component class="javax.swing.JComboBox" name="IPAButton">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="13">
+                  <StringArray count="17">
                     <StringItem index="0" value="No categorizado"/>
                     <StringItem index="1" value="C1 - Muestra Solidaridad"/>
                     <StringItem index="2" value="C2 - Muestra descarga de tensi&#xf3;n"/>
@@ -424,6 +424,10 @@
                     <StringItem index="10" value="C10 - Est&#xe1; en desacuerdo"/>
                     <StringItem index="11" value="C11 - Muestra tensi&#xf3;n"/>
                     <StringItem index="12" value="C12 - Muestra antagonismo"/>
+                    <StringItem index="13" value="C13 - Otra categor&#xed;a 1"/>
+                    <StringItem index="14" value="C14 - Otra categor&#xed;a 2"/>
+                    <StringItem index="15" value="C15 - Otra categor&#xed;a 3"/>
+                    <StringItem index="16" value="C16 - Otra categor&#xed;a 4"/>
                   </StringArray>
                 </Property>
               </Properties>

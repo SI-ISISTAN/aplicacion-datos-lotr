@@ -120,6 +120,7 @@ public class LotRModel extends Model{
                 window.consolePrint(key);
                 window.consolePrint(partialProfiles.get(key).toString());
             }
+             window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
             window.consolePrint("---------------------------------------------");
         }
     };

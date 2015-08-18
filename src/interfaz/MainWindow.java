@@ -282,7 +282,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel9.setText("Categoria");
 
-        IPAButton.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No categorizado", "C1 - Muestra Solidaridad", "C2 - Muestra descarga de tensión", "C3 - Muestra aceptación pasiva", "C4 - Da sugerencia", "C5 - Da opinión", "C6 - Da información", "C7 - Pide orientación", "C8 - Pide opinión", "C9 - Pide sugerencia", "C10 - Está en desacuerdo", "C11 - Muestra tensión", "C12 - Muestra antagonismo" }));
+        IPAButton.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No categorizado", "C1 - Muestra Solidaridad", "C2 - Muestra descarga de tensión", "C3 - Muestra aceptación pasiva", "C4 - Da sugerencia", "C5 - Da opinión", "C6 - Da información", "C7 - Pide orientación", "C8 - Pide opinión", "C9 - Pide sugerencia", "C10 - Está en desacuerdo", "C11 - Muestra tensión", "C12 - Muestra antagonismo", "C13 - Otra categoría 1", "C14 - Otra categoría 2", "C15 - Otra categoría 3", "C16 - Otra categoría 4" }));
         IPAButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 IPAButtonActionPerformed(evt);

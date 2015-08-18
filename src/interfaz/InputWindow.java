@@ -31,6 +31,7 @@ public class InputWindow extends javax.swing.JFrame {
     public InputWindow(MainWindow w) {
         mainWindow = w;
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
