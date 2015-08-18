@@ -448,7 +448,6 @@ public class LotRModel extends Model{
                     addNewModel=true;
                 }
                 if (addNewModel){
-                    System.out.println("addnewmodel");
                     if (partial.getInteractions()>0){
                         BasicDBObject document = new BasicDBObject();
                         document.put("model", modelName);
