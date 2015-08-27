@@ -191,6 +191,13 @@ public class LotRDataInput extends DataInput{
         usersCollection.update(user, new BasicDBObject("$set" , new BasicDBObject("symlog",newProfile) ));
     }
     
+    public DBObject getChatForGame(String gameID){
+        DBCollection chatsCollection = db.getCollection("chats");
+        BasicDBObject query = new BasicDBObject("gameID", gameID);
+        DBObject chat = chatsCollection.findOne(query);
+        return chat;
+    }
+    
     public ArrayList<String> getChats(){
         DBCollection chatsCollection = db.getCollection("chats");
         DBCursor chats = chatsCollection.find();

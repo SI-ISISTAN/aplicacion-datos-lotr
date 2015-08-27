@@ -111,6 +111,34 @@ public class LotRModel extends Model{
                 }
                 i++;
             }
+            //recupero el chat correspondiente a la partida
+            DBObject chat = database.getChatForGame((String)game.get("gameID"));
+            if (chat!=null){
+                //si existe, busco los posibles conflictos y llevo la data a los partial profiles
+                Hashtable<String, LotRIPAConflictTable> tab = this.createIPATables(playersArr);
+                BasicDBList msgs = (BasicDBList)chat.get("chats");
+                if (msgs.size()>0){
+                    for (Object o : msgs){
+                        DBObject msg = (DBObject)o;
+                        String alias = (String)msg.get("from");
+                        if (msg.get("IPA")!=null){
+                            //posible bad casting
+                            
+                            tab.get(alias).addInteractionToConflict((int)msg.get("IPA"));               
+                        }
+                        tab.get(alias).addInteraction();
+                    }
+                    //analisis delegado a table
+                    for (String key : tab.keySet()) {
+                        tab.get(key).analyzeChatsForUser(partialProfiles.get(key));
+                    }
+                }
+                else{
+                    window.consolePrint("\nNo se han encontrado chats para esta partida.");
+                }
+            }
+            
+            
             //guardo cada perfil parcial en la base de datos, en la coleccion de usuarios
             this.savePartialProfiles(partialProfiles, userIDs);
             //guardo en el campo de la partida en la base de datos que ya analice la partida
@@ -470,5 +498,13 @@ public class LotRModel extends Model{
         return modelName;
     }
 
+    private Hashtable<String, LotRIPAConflictTable> createIPATables(DBObject[] players){
+        Hashtable<String, LotRIPAConflictTable> ret = new Hashtable();
+        for(DBObject p : players) {
+              LotRIPAConflictTable conflicts = new LotRIPAConflictTable();
+              ret.put((String)p.get("alias"), conflicts);
+            }
+        return ret;
+    }
 
 };

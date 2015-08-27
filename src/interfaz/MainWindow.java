@@ -459,6 +459,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void resetAnalysisButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetAnalysisButtonActionPerformed
+        consoleArea.setText("");
         ((LotRDataInput)database).resetAnalysis(((LotRModel)model).getModelName());  
         this.consolePrint("Se ha reseteado el análisis.");
         this.consolePrint("---------------------------------------------");
