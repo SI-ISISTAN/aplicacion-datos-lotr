@@ -256,6 +256,9 @@
 			}
 			],
 	"IPA" : {
+		"minIPUFactor" : 0.5,
+		"maxIPUFactor" : 2.0,
+		"minimumInteractionsTotal": 10, 
 		"C1" : [0,0,0],
 		"C2" : [0,0,0],
 		"C3" : [0,0,0],

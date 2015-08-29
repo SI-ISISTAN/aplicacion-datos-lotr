@@ -26,6 +26,7 @@ import org.json.simple.JSONValue;
  */
 public class LotRModel extends Model{
     private Hashtable<String, JSONObject> evaluationPolicy;
+    private JSONObject IPAPolicy;
     private MainWindow window;
     private LotRDataInput database;
     private String modelName;
@@ -42,6 +43,7 @@ public class LotRModel extends Model{
             JSONObject loadedModel = (JSONObject) obj;
             modelName = (String)loadedModel.get("modelName");
             JSONArray policies = (JSONArray) loadedModel.get("actions");
+            IPAPolicy = (JSONObject) loadedModel.get("IPA");
             int i = 0;
             evaluationPolicy = new Hashtable<String,JSONObject>();
             //construir hashatble de politicas a analizar
@@ -117,7 +119,10 @@ public class LotRModel extends Model{
                 //si existe, busco los posibles conflictos y llevo la data a los partial profiles
                 Hashtable<String, LotRIPAConflictTable> tab = this.createIPATables(playersArr);
                 BasicDBList msgs = (BasicDBList)chat.get("chats");
-                if (msgs.size()>0){
+                
+                //cargo los datos de IPA provistos por el modelo JSON 
+                if (msgs.size()>0 && msgs.size()> (long)IPAPolicy.get("minimumInteractionsTotal")){
+                    int chatsAmount = msgs.size();
                     for (Object o : msgs){
                         DBObject msg = (DBObject)o;
                         String alias = (String)msg.get("from");
@@ -128,13 +133,14 @@ public class LotRModel extends Model{
                         }
                         tab.get(alias).addInteraction();
                     }
-                    //analisis delegado a table
+                    //analisis de chats, delegado a table
                     for (String key : tab.keySet()) {
-                        tab.get(key).analyzeChatsForUser(partialProfiles.get(key));
+                            int conflicts = tab.get(key).analyzeChatsForUser(partialProfiles.get(key), IPAPolicy, tab.size(), msgs.size());
+                            window.consolePrint("\nSe han hallado"+conflicts+ " conflictos IPA para el usuario "+key);
                     }
                 }
                 else{
-                    window.consolePrint("\nNo se han encontrado chats para esta partida.");
+                    window.consolePrint("\nNo se han encontrado chats para esta partida, o su número es insuficiente para proveer datos significativos. \n");
                 }
             }
             
@@ -489,7 +495,7 @@ public class LotRModel extends Model{
                 }
             }
             else{
-                System.out.println("No encuentro al user de ID "+userIDs.get(key));
+                window.consolePrint("No se ha encontrado en la base de datos al user de ID "+userIDs.get(key));
             }
         }
     }

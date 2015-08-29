@@ -8,6 +8,8 @@ package connection.lotr;
 import data.analyzer.SymlogProfile;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -49,27 +51,36 @@ public class LotRIPAConflictTable {
     }
     
     //queda delegado aca el análisis (ver cómo carajo)
-    public void analyzeChatsForUser(SymlogProfile profile){
+    public int analyzeChatsForUser(SymlogProfile profile, JSONObject IPAPolicy, int tabSize, int msgAmount){
+        int conflicts=0;
         if (total_interactions>0){
-            System.out.println("Lllego o dia q peleabas con o de patias");
             for (LotRIPAConflictSchema cs : table){
                 if (cs.getInteractions()>0){
                     double ratio = (double)cs.getInteractions()/(double)total_interactions;
-                    System.out.println(cs.getInteractions());
-                    System.out.println(total_interactions);
                     if (ratio< cs.getRange_min() || ratio> cs.getRange_max()){
-                        System.out.println("Conflicto detectado! En habilidad "+cs.getCode()+"!");
-                        System.out.println("Ratio encontrado: "+ratio);
-                        System.out.println("Para limites: "+cs.getRange_min()+" y "+cs.getRange_max());
-                    }
-                    else{
-                        System.out.println("Valores apropidados! En habilidad "+cs.getCode()+"!");
-                        System.out.println("Ratio encontrado: "+ratio);
-                        System.out.println("Para limites: "+cs.getRange_min()+" y "+cs.getRange_max());
+                        //Tengo evidencia de conflicto.
+                        //chequeo que la cantidad de interacciones para el usuario este en lso rangos aceptables
+                        //declarados en el modelo JSON
+                        double int_index = (double)this.getTotal_interactions() / (double)msgAmount;
+                        double ipu_min = (double) IPAPolicy.get("minIPUFactor");
+                        double ipu_max = (double)IPAPolicy.get("maxIPUFactor");
+                        double int_average = 1 / (double)tabSize;
+                        //conflicto confirmado
+                        if (int_index > int_average*ipu_min && int_index < int_average*ipu_max ){
+                            String code = "C".concat(Long.toString(cs.getCode())) ;
+                            JSONArray values = (JSONArray)IPAPolicy.get(code);
+                            if (values!=null){
+                                conflicts++;
+                                profile.addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                                profile.sumInteraction();
+                            }
+                        }
+                        
                     }
                 }
             }
         }
+        return conflicts;
     }
 
     public long getTotal_interactions() {
