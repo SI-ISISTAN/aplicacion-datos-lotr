@@ -7,6 +7,7 @@ package connection.lotr;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import connection.lotr.gamelogic.LotRGameState;
 import data.analyzer.GameActionSchema;
 import data.analyzer.Model;
 import data.analyzer.GameSchema;
@@ -80,82 +81,104 @@ public class LotRModel extends Model{
         //chequea si el juego es digno de evaluacion
         LotRGame game = (LotRGame)g;
         if (this.isAnalyzable(game)){
+
             //Para cada jugador, instancia un nuevo perfil de Symlog hasheado por alias; tener una hash con el par alias - userID
             Hashtable<String, SymlogProfile> partialProfiles = new Hashtable<String, SymlogProfile>();
             Hashtable<String, String> userIDs = new Hashtable<String, String>();
             BasicDBList players = (BasicDBList) game.get("players");
             DBObject[] playersArr = players.toArray(new DBObject[0]);
+            //instancio el estado de juego con la configuracion inicial del juego
+            LotRGameState gameState = new LotRGameState();
+            //
             for(DBObject p : playersArr) {
               partialProfiles.put((String)p.get("alias"), new SymlogProfile());
               userIDs.put((String)p.get("alias"), (String)p.get("userID"));
+              gameState.addPlayer((String)p.get("alias"));
             }
-            window.consolePrint("Analizo nueva partida. Game ID: "+game.get("gameID"));
-            window.consolePrint("---------------------------------------------");
-            //evalua cada accion de juego
-            ArrayList<GameActionSchema> gameActions = game.getGameActions();
-            int i=0;
-            while (i<gameActions.size()){
-                LotRGameAction action = (LotRGameAction) gameActions.get(i);
-                if (this.isActionRelevant(action)){
-                    //evaluar acción   
-                    String actionName = (String) action.get("action");
-                    JSONObject policy = evaluationPolicy.get(actionName);
-                    //si la accion es formato SimpleChoice y existe una acción próxima
-                    if ("SimpleChoice".equals(policy.get("format")) && i+1<gameActions.size()){
-                        this.evaluateSimpleChoice(action, (LotRGameAction) gameActions.get(i+1), policy, partialProfiles.get((String)action.get("player")));
-                    }
-                    else if ("SpontaneousChoice".equals(policy.get("format")) && i+1<gameActions.size()){
-                         this.evaluateSpontaneousChoice(action, policy, partialProfiles.get((String)action.get("player")));
-                    }
-                    else if ("PolledChoice".equals(policy.get("format")) && i+1<gameActions.size()){
-                         this.evaluatePolledChoice(action, policy, partialProfiles);
-                    }
-                }
-                i++;
-            }
-            //recupero el chat correspondiente a la partida
-            DBObject chat = database.getChatForGame((String)game.get("gameID"));
-            if (chat!=null){
-                //si existe, busco los posibles conflictos y llevo la data a los partial profiles
-                Hashtable<String, LotRIPAConflictTable> tab = this.createIPATables(playersArr);
-                BasicDBList msgs = (BasicDBList)chat.get("chats");
-                
-                //cargo los datos de IPA provistos por el modelo JSON 
-                if (msgs.size()>0 && msgs.size()> (long)IPAPolicy.get("minimumInteractionsTotal")){
-                    int chatsAmount = msgs.size();
-                    for (Object o : msgs){
-                        DBObject msg = (DBObject)o;
-                        String alias = (String)msg.get("from");
-                        if (msg.get("IPA")!=null){
-                            //posible bad casting
-                            
-                            tab.get(alias).addInteractionToConflict((int)msg.get("IPA"));               
+            
+            if (game.get("configName")!=null){
+                DBObject config = database.getConfig((String)game.get("configName"));
+                if (config!=null){
+                    gameState.loadInitialState(config);
+                    System.out.println(gameState.toString());
+                    //si hay datos sobre el gamestate
+                    window.consolePrint("Analizo nueva partida. Game ID: "+game.get("gameID"));
+                    window.consolePrint("---------------------------------------------");
+                    //evalua cada accion de juego
+                    ArrayList<GameActionSchema> gameActions = game.getGameActions();
+                    int i=0;
+                    while (i<gameActions.size()){
+                        LotRGameAction action = (LotRGameAction) gameActions.get(i);
+                        //updatear el gamestate
+                        gameState.update(action);
+                        //analizar la accion si es relevante
+                        if (this.isActionRelevant(action)){
+                            //evaluar acción   
+                            String actionName = (String) action.get("action");
+                            JSONObject policy = evaluationPolicy.get(actionName);
+                            //si la accion es formato SimpleChoice y existe una acción próxima
+                            if ("SimpleChoice".equals(policy.get("format")) && i+1<gameActions.size()){
+                                this.evaluateSimpleChoice(action, (LotRGameAction) gameActions.get(i+1), policy, partialProfiles.get((String)action.get("player")));
+                            }
+                            else if ("SpontaneousChoice".equals(policy.get("format")) && i+1<gameActions.size()){
+                                 this.evaluateSpontaneousChoice(action, policy, partialProfiles.get((String)action.get("player")));
+                            }
+                            else if ("PolledChoice".equals(policy.get("format")) && i+1<gameActions.size()){
+                                 this.evaluatePolledChoice(action, policy, partialProfiles);
+                            }
                         }
-                        tab.get(alias).addInteraction();
+                        i++;
                     }
-                    //analisis de chats, delegado a table
-                    for (String key : tab.keySet()) {
-                            int conflicts = tab.get(key).analyzeChatsForUser(partialProfiles.get(key), IPAPolicy, tab.size(), msgs.size());
-                            window.consolePrint("\nSe han hallado"+conflicts+ " conflictos IPA para el usuario "+key);
+                    //recupero el chat correspondiente a la partida
+                    DBObject chat = database.getChatForGame((String)game.get("gameID"));
+                    if (chat!=null){
+                        //si existe, busco los posibles conflictos y llevo la data a los partial profiles
+                        Hashtable<String, LotRIPAConflictTable> tab = this.createIPATables(playersArr);
+                        BasicDBList msgs = (BasicDBList)chat.get("chats");
+
+                        //cargo los datos de IPA provistos por el modelo JSON 
+                        if (msgs.size()>0 && msgs.size()> (long)IPAPolicy.get("minimumInteractionsTotal")){
+                            int chatsAmount = msgs.size();
+                            for (Object o : msgs){
+                                DBObject msg = (DBObject)o;
+                                String alias = (String)msg.get("from");
+                                if (msg.get("IPA")!=null){
+                                    //posible bad casting
+
+                                    tab.get(alias).addInteractionToConflict((int)msg.get("IPA"));               
+                                }
+                                tab.get(alias).addInteraction();
+                            }
+                            //analisis de chats, delegado a table
+                            for (String key : tab.keySet()) {
+                                    int conflicts = tab.get(key).analyzeChatsForUser(partialProfiles.get(key), IPAPolicy, tab.size(), msgs.size());
+                                    window.consolePrint("\nSe han hallado"+conflicts+ " conflictos IPA para el usuario "+key);
+                            }
+                        }
+                        else{
+                            window.consolePrint("\nNo se han encontrado chats para esta partida, o su número es insuficiente para proveer datos significativos. \n");
+                        }
                     }
-                }
-                else{
-                    window.consolePrint("\nNo se han encontrado chats para esta partida, o su número es insuficiente para proveer datos significativos. \n");
+
+
+                    //guardo cada perfil parcial en la base de datos, en la coleccion de usuarios
+                    this.savePartialProfiles(partialProfiles, userIDs);
+                    //guardo en el campo de la partida en la base de datos que ya analice la partida
+                    database.setAnalyzedGame((String)game.get("gameID"), modelName);
+                    //imprimo resultado
+                    for (String key : partialProfiles.keySet()) {
+                        window.consolePrint(key);
+                        window.consolePrint(partialProfiles.get(key).toString());
+                    }
+                     window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
+                    window.consolePrint("---------------------------------------------");
                 }
             }
-            
-            
-            //guardo cada perfil parcial en la base de datos, en la coleccion de usuarios
-            this.savePartialProfiles(partialProfiles, userIDs);
-            //guardo en el campo de la partida en la base de datos que ya analice la partida
-            database.setAnalyzedGame((String)game.get("gameID"), modelName);
-            //imprimo resultado
-            for (String key : partialProfiles.keySet()) {
-                window.consolePrint(key);
-                window.consolePrint(partialProfiles.get(key).toString());
+            else{
+                //no hay data sobre la configuracion inicial
+                System.out.println("No hay datos sobre la configuracion inicial de la partida");
             }
-             window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
-            window.consolePrint("---------------------------------------------");
+            
         }
     };
     

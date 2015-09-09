@@ -230,6 +230,21 @@ public class LotRDataInput extends DataInput{
         return messageList;
     }
     
+    public DBObject getConfig(String configName){
+        System.out.println(configName);
+        DBCollection configsCollection = db.getCollection("configs");
+        DBObject config = configsCollection.findOne();
+        BasicDBList configs = (BasicDBList)config.get("configs");
+        int i=0;
+        while (i<configs.size()){
+            if (configs.get(i) != null && configName.equals( ((DBObject)configs.get(i)).get("configName") )){
+                return (DBObject)configs.get(i);
+            }
+            i++;
+        }
+        return null;
+    }
+    
     //eeee massomeno. falta setear todo en 0 cuando se termina
     public void saveChatAnalysis (String chatID, ArrayList<BasicDBObject> msgs){
         DBCollection chatsCollection = db.getCollection("chats");
