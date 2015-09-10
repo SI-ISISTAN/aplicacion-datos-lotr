@@ -78,10 +78,6 @@ public class LotRPlayerState {
         this.cardsAmount = this.cardsAmount+amount;
     }
     
-    public void removeCards(int amount){
-        this.cardsAmount = this.cardsAmount-amount;
-    }
-    
     public void move(int amount){
         this.position = this.position+amount;
     }

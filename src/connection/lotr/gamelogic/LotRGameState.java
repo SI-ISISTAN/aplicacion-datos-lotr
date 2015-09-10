@@ -18,7 +18,8 @@ import java.util.Hashtable;
 public class LotRGameState {
     int sauronPosition;
     int locationNumber;
-    int locationsAmount=0;
+    int locationsAmount;
+    int an;
     
     Hashtable<String, LotRPlayerState> players;
     DBObject config;
@@ -27,6 +28,7 @@ public class LotRGameState {
         sauronPosition=0;
         locationNumber=0;
         locationsAmount=0;
+        an=0;
         players = new Hashtable<String, LotRPlayerState>();
         config=null;
     }
@@ -45,7 +47,7 @@ public class LotRGameState {
     public String toString() {
         String ret = "LotRGameState{" + "sauronPosition=" + sauronPosition + ", locationNumber=" + locationNumber + ", locationsAmount=" + locationsAmount + ", players: \n" ;
         for (String key : players.keySet()){
-                    ret+=players.get(key).toString();
+                    ret+=key+players.get(key).toString();
         }
         return ret;
     }
@@ -54,6 +56,7 @@ public class LotRGameState {
         String name = (String)action.get("action");
         DBObject data = (DBObject)action.get("data");
         //habra que hacer seguimiento de turnos?
+        System.out.println("Gameaction: "+an);
         switch(name){
             
             case "DealHobbitCards":
@@ -67,31 +70,29 @@ public class LotRGameState {
                 }
                 break;
             case "DealFeatureCards":
-                //ver que onda
-                //PO LE MI CO
+                BasicDBList given = (BasicDBList)data.get("given");
+                for (Object o : given){
+                    DBObject card = (DBObject)o;
+                    players.get((String)card.get("player")).addCards(1);
+                }
                 break;
             case "PlayerDiscard":
                 //ir carta por carta y no contar las especiales
                 //esto es cuanto menos, polémico
                 BasicDBList discards = (BasicDBList)data.get("discard");
-                int discarded = 0;
-                for (Object o : discards){
-                    DBObject card = (DBObject)o;
-                    if ("Generic".equals(card.get("type"))){
-                        discarded++;
-                    }
-                }
-                players.get((String)data.get("player")).removeCards(discarded);
+                int discarded = discards.size();
+                players.get((String)data.get("player")).addCards(-discarded);
                 break;
             case "MovePlayer":
-                players.get((String)data.get("player")).move((int)data.get("amount"));
+                players.get((String)data.get("alias")).move((int)data.get("amount"));
                 break;
             case "MoveSauron":
-                this.sauronPosition+=(int)data.get("amount");
+                this.sauronPosition-=(int)data.get("amount");
                 break;    
             case "PlayerGiveCards":
-                players.get((String)data.get("to")).addCards(((BasicDBList)data.get("cards")).size());
-                players.get((String)data.get("from")).removeCards(((BasicDBList)data.get("cards")).size());
+                int amount =((BasicDBList)data.get("cards")).size();
+                players.get((String)data.get("to")).addCards(amount);
+                players.get((String)data.get("from")).addCards(-amount);
                 break;      
             case "ChangeTokens":
                 if (data.get("token")!=null){
@@ -100,14 +101,22 @@ public class LotRGameState {
                 }
                 break; 
             case "PlayCard":
-                players.get((String)data.get("player")).removeCards(1);
+                if (data.get("played")!=null){             
+                    DBObject card = (DBObject)data.get("played");
+                    if (card.get("type")!=null){
+                            players.get((String)data.get("alias")).addCards(-1);
+                    }
+                }
                 break;
             case "PlaySpecialCard":
-                //si no las cuento no las descuento
+                players.get((String)action.get("player")).addCards(-1);
+                break;
+            case "DealFeatureCardByName":
+                players.get((String)data.get("player")).addCards(1);
                 break;
         }
         System.out.println(this.toString());
-        System.out.println(players.size());
+        an++;
     }
     
     
