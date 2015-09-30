@@ -31,6 +31,7 @@ public class LotRModel extends Model{
     private MainWindow window;
     private LotRDataInput database;
     private String modelName;
+    private LotRGameState gameState;
     
     public LotRModel(MainWindow w, LotRDataInput inp, String JSONpath){
         super();
@@ -88,7 +89,7 @@ public class LotRModel extends Model{
             BasicDBList players = (BasicDBList) game.get("players");
             DBObject[] playersArr = players.toArray(new DBObject[0]);
             //instancio el estado de juego con la configuracion inicial del juego
-            LotRGameState gameState = new LotRGameState();
+            gameState = new LotRGameState();
             System.out.println("--------------------- NUEVA PARTIDA: ID "+(String)game.get("gameID")+" ---------------------");
             for(DBObject p : playersArr) {
               partialProfiles.put((String)p.get("alias"), new SymlogProfile());
@@ -100,7 +101,6 @@ public class LotRModel extends Model{
                 DBObject config = database.getConfig((String)game.get("configName"));
                 if (config!=null){
                     gameState.loadInitialState(config);
-                    System.out.println(gameState.toString());
                     //si hay datos sobre el gamestate
                     window.consolePrint("Analizo nueva partida. Game ID: "+game.get("gameID"));
                     window.consolePrint("---------------------------------------------");
@@ -118,7 +118,7 @@ public class LotRModel extends Model{
                             JSONObject policy = evaluationPolicy.get(actionName);
                             //si la accion es formato SimpleChoice y existe una acción próxima
                             if ("SimpleChoice".equals(policy.get("format")) && i+1<gameActions.size()){
-                                this.evaluateSimpleChoice(action, (LotRGameAction) gameActions.get(i+1), policy, partialProfiles.get((String)action.get("player")));
+                                this.evaluateSimpleChoice(action, (LotRGameAction) gameActions.get(i+1), policy, partialProfiles.get((String)action.get("player")), (String)action.get("player"));
                             }
                             else if ("SpontaneousChoice".equals(policy.get("format")) && i+1<gameActions.size()){
                                  this.evaluateSpontaneousChoice(action, policy, partialProfiles.get((String)action.get("player")));
@@ -183,7 +183,7 @@ public class LotRModel extends Model{
     };
     
     //Evaluar accion de formato elección simple
-    public void evaluateSimpleChoice(LotRGameAction action, LotRGameAction nextAction, JSONObject policy, SymlogProfile result){
+    public void evaluateSimpleChoice(LotRGameAction action, LotRGameAction nextAction, JSONObject policy, SymlogProfile result, String player){
         JSONArray choices = (JSONArray) policy.get("choices");
         int i =0;
         boolean found=false;
@@ -191,17 +191,17 @@ public class LotRModel extends Model{
            JSONObject choice = (JSONObject)choices.get(i);
            //si encuentro la accion en las politicas
            if ( ((String)nextAction.get("action")).equals((choice).get("action"))){
-                JSONArray values = (JSONArray)choice.get("result");
-                result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
-                this.setRange(choices, result);
+                    JSONArray values = this.getSymlogValues((JSONArray)choice.get("result"), player);
+                    result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                    this.setRange(choices, result, player);
                 found=true;
            }
            i++;
         }
         if (!found){
-            JSONArray values = (JSONArray)(((JSONObject)choices.get(choices.size()-1)).get("result"));
-            result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
-            this.setRange(choices, result);
+                JSONArray values = this.getSymlogValues((JSONArray)(((JSONObject)choices.get(choices.size()-1)).get("result")), player);
+                result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                this.setRange(choices, result, player);
         }
         result.sumInteraction();
     }
@@ -234,9 +234,9 @@ public class LotRModel extends Model{
                JSONObject choice = (JSONObject)choices.get(i);
                //si encuentro la accion en las politicas
                if ( value.equals((choice).get("action"))){
-                    JSONArray values = (JSONArray)choice.get("result");
-                    result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
-                    result.addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                        JSONArray values = (JSONArray)choice.get("result");
+                        result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                        result.addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                     found=true;
                }
                i++;
@@ -264,13 +264,13 @@ public class LotRModel extends Model{
                     String user = (String)((JSONObject)votes.get(v)).get("alias");
                     if ((boolean)((JSONObject)votes.get(v)).get("agree") != agreement){
                         
-                        JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree");
-                        partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));     
+                            JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree");
+                            partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));     
                         //partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                     }
                     else{
-                        JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("agree");
-                        partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
+                            JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("agree");
+                            partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                         //partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                     }
                     JSONArray choices = new JSONArray();
@@ -352,7 +352,7 @@ public class LotRModel extends Model{
         }
     }
     
-    public void setRange(JSONArray choices, SymlogProfile profile){
+    public void setRange(JSONArray choices, SymlogProfile profile, String player){
         //agregar al rango para calculo de acciones consideradas
                 int j=0;
                 long maxUD = -99999;
@@ -362,7 +362,9 @@ public class LotRModel extends Model{
                 long minPN = 99999;
                 long minFB= 99999;
                 while (j<choices.size()){
-                    JSONArray othvalues = (JSONArray)((JSONObject)choices.get(j)).get("result");
+                    //tengo que agregar el analisis de posibilidades
+                    JSONArray othvalues = this.getSymlogValues((JSONArray)((JSONObject)choices.get(j)).get("result"), player);
+                    
                     if ((long)othvalues.get(0) > maxUD){
                         maxUD = (long)othvalues.get(0);
                     }
@@ -534,6 +536,50 @@ public class LotRModel extends Model{
               ret.put((String)p.get("alias"), conflicts);
             }
         return ret;
+    }
+    
+    //le paso el array que contiene objetos par {"conditions", "values"}
+    public JSONArray getSymlogValues (JSONArray values, String player){
+        JSONArray result = null;
+        int i=0;
+        boolean found = false;
+        //itero por los pares condition/values
+        while (!found && i<values.size()){
+            //si el array conditions es nulo, es incondicional
+            if (((JSONObject)values.get(i)).get("conditions") == null){
+
+                result = (JSONArray)((JSONObject)values.get(i)).get("values");
+                found=true;
+            }
+            else{
+                //si el array conditions es no nulo
+                JSONArray conditions = (JSONArray)((JSONObject)values.get(i)).get("conditions");
+                int j=0;
+                boolean allconditions=true;
+                while (j<conditions.size()){
+                    String condition = (String)conditions.get(j);
+                    //si se dan todos lso terminos de la condicion, se la acepta como valor de retorno
+                    if (!"other".equals(condition)){
+                        if (!gameState.getCondition((String)conditions.get(j), player)){
+                                allconditions=false;
+                        }
+                    }
+                    else{
+                        //si llegue al punto de evaluar "others", que va ultimo y esta solo, es porque las demas condiciones fallaron; tiro el valor
+                        result = (JSONArray)((JSONObject)values.get(i)).get("values");
+                        found=true;
+                    }
+                    j++;
+                }
+                if (allconditions){
+                    result = (JSONArray)((JSONObject)values.get(i)).get("values");
+                    found=true;
+                }
+                i++;
+            }
+        }
+        //si termine de iterar y no encuentro nada, me fijo si hay condicion "other"
+        return result;
     }
 
 };

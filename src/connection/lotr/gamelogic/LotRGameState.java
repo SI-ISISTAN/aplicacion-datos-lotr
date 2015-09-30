@@ -52,11 +52,11 @@ public class LotRGameState {
         return ret;
     }
     
+    //Tienen un par de acciones básicas
     public void update (LotRGameAction action){
         String name = (String)action.get("action");
         DBObject data = (DBObject)action.get("data");
         //habra que hacer seguimiento de turnos?
-        System.out.println("Gameaction: "+an);
         switch(name){
             
             case "DealHobbitCards":
@@ -115,9 +115,138 @@ public class LotRGameState {
                 players.get((String)data.get("player")).addCards(1);
                 break;
         }
-        System.out.println(this.toString());
         an++;
     }
     
+    //valores potencialmente configurables
+    public boolean getCondition(String condition, String player){
+        boolean ret = false;
+            if (condition.equals("HasMoreCards")){
+                int am = players.get(player).getCardsAmount();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getCardsAmount();
+                }
+                avg=avg/players.size();
+                if (am>avg){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasMuchMoreCards")){
+                int am = players.get(player).getCardsAmount();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getCardsAmount();
+                }
+                avg=avg/players.size();
+                if (am>avg*1.5){
+                    ret=true;
+                }
+
+            }
+            else if (condition.equals("HasFewerCards")){
+                int am = players.get(player).getCardsAmount();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getCardsAmount();
+                }
+                avg=avg/players.size();
+                if (am<avg){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasMuchFewerCards")){
+                int am = players.get(player).getCardsAmount();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getCardsAmount();
+                }
+                avg=avg/players.size();
+                if (am<avg*1.5){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasFewCards")){
+                int am = players.get(player).getCardsAmount();
+                if (am<=3){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("IsCloseToSauron")){
+                int pos = players.get(player).getPosition();
+                int sauron = this.sauronPosition;
+                if (sauronPosition-pos <= 2){
+                    return true;
+                }
+            }
+            else if (condition.equals("IsCloserToSauron")){
+                int pos = players.get(player).getPosition();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getPosition();
+                }
+                avg=avg/players.size();
+                if (pos>avg){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("IsFurther")){
+                int pos = players.get(player).getPosition();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getPosition();
+                }
+                avg=avg/players.size();
+                if (pos<avg){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasFewerSunTokens")){
+                int tokens = players.get(player).getSunTokens();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getSunTokens();
+                }
+                avg=avg/players.size();
+                if (tokens<avg){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasFewerLifeTokens")){
+                int tokens = players.get(player).getLifeTokens();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getLifeTokens();
+                }
+                avg=avg/players.size();
+                if (tokens<avg){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasFewerRingTokens")){
+                int tokens = players.get(player).getRingTokens();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getRingTokens();
+                }
+                avg=avg/players.size();
+                if (tokens<avg){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasFewerShieldTokens")){
+                int tokens = players.get(player).getShields();
+                int avg=0;
+                for (String key : players.keySet()){
+                        avg+=players.get(key).getShields();
+                }
+                avg=avg/players.size();
+                if (tokens<avg){
+                    ret=true;
+                }
+            }
+        
+        return false;
+    }
     
 }

@@ -96,7 +96,12 @@ public class LotRPlayerState {
                         shields = shields+=amount;
                     }
     }
-
+    
+    public boolean getCondition(String condition){
+        
+        return false;
+    }
+    
     @Override
     public String toString() {
         return "LotRPlayerState{" + "position=" + position + ", cardsAmount=" + cardsAmount + ", lifeTokens=" + lifeTokens + ", sunTokens=" + sunTokens + ", ringTokens=" + ringTokens + ", shields=" + shields + '}';

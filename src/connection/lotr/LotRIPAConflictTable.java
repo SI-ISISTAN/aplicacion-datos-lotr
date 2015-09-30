@@ -22,6 +22,7 @@ public class LotRIPAConflictTable {
     public LotRIPAConflictTable(){
         table = new ArrayList<LotRIPAConflictSchema>();
               //Agrego conflictos e índices
+              //Esto no estaría nada mal cargarlo desde el JSON
                   table.add(new LotRIPAConflictSchema(1, 0, 0.05));
                   table.add(new LotRIPAConflictSchema(2, 0.03, 0.14));
                   table.add(new LotRIPAConflictSchema(3, 0.06, 0.2));
