@@ -102,6 +102,22 @@ public class LotRPlayerState {
         return false;
     }
     
+    public int getToken(String token) {
+        if ("shield".equals(token)){
+            return shields;
+        }
+        else if ("sun".equals(token)){
+            return sunTokens;
+        }
+        else if ("life".equals(token)){
+            return lifeTokens;
+        }
+        else if ("ring".equals(token)){
+            return ringTokens;
+        }
+        else return 0;
+    }
+    
     @Override
     public String toString() {
         return "LotRPlayerState{" + "position=" + position + ", cardsAmount=" + cardsAmount + ", lifeTokens=" + lifeTokens + ", sunTokens=" + sunTokens + ", ringTokens=" + ringTokens + ", shields=" + shields + '}';

@@ -557,26 +557,29 @@ public class LotRModel extends Model{
                 int j=0;
                 boolean allconditions=true;
                 while (j<conditions.size()){
-                    String condition = (String)conditions.get(j);
+                    String condition = (String)((JSONObject)conditions.get(j)).get("condition");
                     //si se dan todos lso terminos de la condicion, se la acepta como valor de retorno
                     if (!"other".equals(condition)){
-                        if (!gameState.getCondition((String)conditions.get(j), player)){
+                        if (!gameState.getCondition((JSONObject)conditions.get(j), player)){
                                 allconditions=false;
                         }
                     }
                     else{
-                        //si llegue al punto de evaluar "others", que va ultimo y esta solo, es porque las demas condiciones fallaron; tiro el valor
-                        result = (JSONArray)((JSONObject)values.get(i)).get("values");
-                        found=true;
+                            //si llegue al punto de evaluar "others", que va ultimo y esta solo, es porque las demas condiciones fallaron; tiro el valor
+                            result = (JSONArray)((JSONObject)values.get(i)).get("values");
+                            System.out.println("tire un other!!! valores = "+result.toString());
+                            found=true;
                     }
                     j++;
                 }
-                if (allconditions){
+                if (allconditions && !found){
+                    
                     result = (JSONArray)((JSONObject)values.get(i)).get("values");
+                    System.out.println("tire una condition!!! valores = "+result.toString());
                     found=true;
                 }
-                i++;
             }
+            i++;
         }
         //si termine de iterar y no encuentro nada, me fijo si hay condicion "other"
         return result;

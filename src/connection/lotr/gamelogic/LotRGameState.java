@@ -10,6 +10,7 @@ import com.mongodb.DBObject;
 import connection.lotr.LotRGame;
 import connection.lotr.LotRGameAction;
 import java.util.Hashtable;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -119,9 +120,11 @@ public class LotRGameState {
     }
     
     //valores potencialmente configurables
-    public boolean getCondition(String condition, String player){
+    public boolean getCondition(JSONObject conditionObj, String player){
         boolean ret = false;
+        String condition = (String)conditionObj.get("condition");
             if (condition.equals("HasMoreCards")){
+                
                 int am = players.get(player).getCardsAmount();
                 int avg=0;
                 for (String key : players.keySet()){
@@ -166,9 +169,17 @@ public class LotRGameState {
                     ret=true;
                 }
             }
-            else if (condition.equals("HasFewCards")){
+            else if (condition.equals("HasLessThanCards")){
+                long cards = (long)conditionObj.get("amount");
                 int am = players.get(player).getCardsAmount();
-                if (am<=3){
+                if ((long)am<cards){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasMoreThanCards")){
+                long cards = (long)conditionObj.get("amount");
+                int am = players.get(player).getCardsAmount();
+                if ((long)am>cards){
                     ret=true;
                 }
             }
@@ -176,7 +187,7 @@ public class LotRGameState {
                 int pos = players.get(player).getPosition();
                 int sauron = this.sauronPosition;
                 if (sauronPosition-pos <= 2){
-                    return true;
+                    ret=true;
                 }
             }
             else if (condition.equals("IsCloserToSauron")){
@@ -245,8 +256,22 @@ public class LotRGameState {
                     ret=true;
                 }
             }
+            else if (condition.equals("HasEqualOrMoreTokens")){
+                String token = (String)conditionObj.get("token");
+                long am = (long)conditionObj.get("amount");
+                if ((long)players.get(player).getToken(token) >= am){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("HasEqualOrLessTokens")){
+                String token = (String)conditionObj.get("token");
+                long am = (long)conditionObj.get("amount");
+                if ((long)players.get(player).getToken(token) <= am){
+                    ret=true;
+                }
+            }
         
-        return false;
+        return ret;
     }
     
 }

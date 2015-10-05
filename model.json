@@ -40,28 +40,53 @@
 				"format" : "SimpleChoice",
 				"choices" : [
 					{"action" : "DealHobbitCards",  "result" : [{
-						"conditions" : null,
-						"values" : [0,1,0]}]
+						"conditions" : [{"condition" : "HasLessThanCards", "amount":3}],
+						"values" : [1,0,1]},
+						{"conditions" : [{"condition" : "HasMoreThanCards", "amount":6}],
+						"values" : [2,-1,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [1,0,0]},
+						]
 					},
-					{"action" : "ForceDiscard",  "result" : [{
-						"conditions" : null,
-						"values" : [1,0,0]}]
+					{"action" : "MovePlayer",  "result" : [{
+						"conditions" : [{"condition" : "IsCloseToSauron"}],
+						"values" : [0,0,1]},
+						{"conditions" : [{"condition" : "IsFurther"}, {"condition" : "HasLessThanCards", "amount":3}],
+						"values" : [0,-2,-2]},
+						{"conditions" : [{"condition" : "IsFurther"}],
+						"values" : [2,-1,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [1,0,1]},
+						]
 					},
 					{"action" : "other",  "result" : [{
-						"conditions" : null,
-						"values" : [0,0,0]}]
+						"conditions" : [{"condition" : "HasEqualOrMoreTokens", "token":"shield", "amount":3}],
+						"values" : [-2,-1,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,0,0]},
+						]
 					}]
 			},
 			{"name": "GalardielTest",
 				"format" : "SimpleChoice",
 				"choices" : [
 					{"action" : "ForceDiscard",  "result" : [{
-						"conditions" : null,
-						"values" : [-1,1,0]}]
+						"conditions" : [{"condition" : "HasLessThanCards", "amount":4}],
+						"values" : [-2,2,1]},
+						{"conditions" : [{"condition" : "HasMoreThanCards", "amount":10}],
+						"values" : [0,1,0]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [-1,1,0]},
+						]
 					},
 					{"action" : "other",  "result" : [{
-						"conditions" : null,
-						"values" : [2,-1,-1]}]
+						"conditions" : [{"condition" : "HasLessThanCards", "amount":4}],
+						"values" : [0,0,1]},
+						{"conditions" : [{"condition" : "HasMoreThanCards", "amount":10}],
+						"values" : [1,-1,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [1,0,0]},
+						]
 					}]
 			},
 			{"name": "OrthancFire",
