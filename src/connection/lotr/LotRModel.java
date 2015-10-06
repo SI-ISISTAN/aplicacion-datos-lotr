@@ -121,7 +121,7 @@ public class LotRModel extends Model{
                                 this.evaluateSimpleChoice(action, (LotRGameAction) gameActions.get(i+1), policy, partialProfiles.get((String)action.get("player")), (String)action.get("player"));
                             }
                             else if ("SpontaneousChoice".equals(policy.get("format")) && i+1<gameActions.size()){
-                                 this.evaluateSpontaneousChoice(action, policy, partialProfiles.get((String)action.get("player")));
+                                 this.evaluateSpontaneousChoice(action, policy, partialProfiles.get((String)action.get("player")), (String)action.get("player"));
                             }
                             else if ("PolledChoice".equals(policy.get("format")) && i+1<gameActions.size()){
                                  this.evaluatePolledChoice(action, policy, partialProfiles);
@@ -160,17 +160,18 @@ public class LotRModel extends Model{
                         }
                     }
 
-
+                    
                     //guardo cada perfil parcial en la base de datos, en la coleccion de usuarios
                     this.savePartialProfiles(partialProfiles, userIDs);
                     //guardo en el campo de la partida en la base de datos que ya analice la partida
                     database.setAnalyzedGame((String)game.get("gameID"), modelName);
                     //imprimo resultado
+                    
                     for (String key : partialProfiles.keySet()) {
                         window.consolePrint(key);
                         window.consolePrint(partialProfiles.get(key).toString());
                     }
-                     window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
+                    window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
                     window.consolePrint("---------------------------------------------");
                 }
             }
@@ -207,7 +208,7 @@ public class LotRModel extends Model{
     }
     
     //Evluar accion de formato elección espontánea
-    public void evaluateSpontaneousChoice(LotRGameAction action,  JSONObject policy, SymlogProfile result){
+    public void evaluateSpontaneousChoice(LotRGameAction action,  JSONObject policy, SymlogProfile result, String player){
         JSONArray fieldLocation = (JSONArray) policy.get("field");
         
         int j=0;
@@ -234,7 +235,7 @@ public class LotRModel extends Model{
                JSONObject choice = (JSONObject)choices.get(i);
                //si encuentro la accion en las politicas
                if ( value.equals((choice).get("action"))){
-                        JSONArray values = (JSONArray)choice.get("result");
+                        JSONArray values = this.getSymlogValues((JSONArray)choice.get("result"), player);
                         result.addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                         result.addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                     found=true;
@@ -547,7 +548,7 @@ public class LotRModel extends Model{
         while (!found && i<values.size()){
             //si el array conditions es nulo, es incondicional
             if (((JSONObject)values.get(i)).get("conditions") == null){
-
+                
                 result = (JSONArray)((JSONObject)values.get(i)).get("values");
                 found=true;
             }
@@ -567,7 +568,6 @@ public class LotRModel extends Model{
                     else{
                             //si llegue al punto de evaluar "others", que va ultimo y esta solo, es porque las demas condiciones fallaron; tiro el valor
                             result = (JSONArray)((JSONObject)values.get(i)).get("values");
-                            System.out.println("tire un other!!! valores = "+result.toString());
                             found=true;
                     }
                     j++;
@@ -575,13 +575,11 @@ public class LotRModel extends Model{
                 if (allconditions && !found){
                     
                     result = (JSONArray)((JSONObject)values.get(i)).get("values");
-                    System.out.println("tire una condition!!! valores = "+result.toString());
                     found=true;
                 }
             }
             i++;
         }
-        //si termine de iterar y no encuentro nada, me fijo si hay condicion "other"
         return result;
     }
 

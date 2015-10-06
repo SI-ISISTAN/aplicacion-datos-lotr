@@ -212,24 +212,85 @@
 				"format" : "SpontaneousChoice",
 				"field" : ["data","card","name"],
 				"choices" : [
-					{"action" : "Previsión",  "result" : [0,0,1]},
-					{"action" : "Guía",  "result" : [-1,1,1]},
-					{"action" : "Sanación",  "result" : [1,0,-1]},
-					{"action" : "Persistencia",  "result" : [2,0,0]},
-					{"action" : "Magia",  "result" : [0,1,1]}]
+					{"action" : "Previsión",  "result" : [{
+						"conditions" : [{"condition" : "HasEqualOrLessTokens", "token":"shield", "amount": 6}],
+						"values" : [-1,2,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,2,1]}]
+					},
+					{"action" : "Guía",  "result" : [{
+						"conditions" : [{"condition" : "HasEqualOrLessTokens", "token":"shield", "amount": 6}],
+						"values" : [-1,2,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,2,1]}]
+					},
+					{"action" : "Sanación",  "result" : [{
+						"conditions" : [{"condition" : "HasEqualOrLessTokens", "token":"shield", "amount": 6}, {"condition" : "IsCloserToSauron"}],
+						"values" : [0,1,1]},
+						{"conditions" : [{"condition" : "HasEqualOrLessTokens", "token":"shield", "amount": 6}],
+						"values" : [1,0,-1]},
+						{"conditions" : [{"condition" : "IsCloserToSauron"}],
+						"values" : [1,1,0]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,0,0]}]
+					},
+					{"action" : "Persistencia",  "result" : [{
+						"conditions" : [{"condition" : "HasEqualOrLessTokens", "token":"shield", "amount": 6}, {"condition" : "HasLessThanCards", "amount":5}],
+						"values" : [0,0,1]},
+						{"conditions" : [{"condition" : "HasEqualOrLessTokens", "token":"shield", "amount": 6}],
+						"values" : [0,1,0]},
+						{"conditions" : [{"condition" : "HasLessThanCards", "amount":5}],
+						"values" : [1,1,1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [1,0,-1]}]
+					},
+					{"action" : "Magia",  "result" : [{
+						"conditions" : [{"condition" : "HasEqualOrLessTokens", "token":"shield", "amount": 6}],
+						"values" : [-1,2,0]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,1,1]}]
+					}]
 			},
 			{"name": "PlayCard",
 				"format" : "SpontaneousChoice",
 				"field" : ["data","played","name"],
 				"choices" : [
-					{"action" : "Miruvor",  "result" : [-1,1,0]},
-					{"action" : "Staff",  "result" : [0,1,0]},
-					{"action" : "Athelas",  "result" : [0,1,0]},
-					{"action" : "Elessar",  "result" : [1,0,0]},
-					{"action" : "Mithril",  "result" : [1,0,0]},
-					{"action" : "Phial",  "result" : [0,1,0]},
-					{"action" : "Belt",  "result" : [1,0,0]},
-					{"action" : "Lembas",  "result" : [1,0,0]}]
+					{"action" : "Miruvor",  "result" : [{
+						"conditions" : null,
+						"values" : [-1,1,0]}]
+					},
+					{"action" : "Staff",  "result" : [{
+						"conditions" : null,
+						"values" : [0,1,0]}]
+					},
+					{"action" : "Athelas",  "result" : [{
+						"conditions" : null,
+						"values" : [0,1,0]}]
+					},
+					{"action" : "Elessar",  "result" : [{
+						"conditions" : [{"condition" : "IsCloserToSauron"}],
+						"values" : [1,1,1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [1,0,0]}]
+					},
+					{"action" : "Mithril",  "result" : [{
+						"conditions" : null,
+						"values" : [1,0,0]}]
+					},
+					{"action" : "Phial",  "result" : [{
+						"conditions" : null,
+						"values" : [0,1,0]}]
+					},
+					{"action" : "Belt",  "result" : [{
+						"conditions" : null,
+						"values" : [1,0,0]}]
+					},
+					{"action" : "Lembas",  "result" : [{
+						"conditions" : [{"condition" : "HasLessThanCards", "amount":4}],
+						"values" : [1,0,1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,-1,-1]}]
+					}]
 			},
 			{"name": "PlayerDealCards",
 				"format" : "PolledChoice",
@@ -246,8 +307,7 @@
 					"others" :{
 						"agree" : [-1,1,0],
 						"disagree": [0,0,0]
-					},
-
+					}
 				}
 			},
 			{"name": "CommonDiscard",
