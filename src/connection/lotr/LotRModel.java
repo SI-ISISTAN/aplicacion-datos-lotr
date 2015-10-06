@@ -152,7 +152,7 @@ public class LotRModel extends Model{
                             //analisis de chats, delegado a table
                             for (String key : tab.keySet()) {
                                     int conflicts = tab.get(key).analyzeChatsForUser(partialProfiles.get(key), IPAPolicy, tab.size(), msgs.size());
-                                    window.consolePrint("\nSe han hallado"+conflicts+ " conflictos IPA para el usuario "+key);
+                                    window.consolePrint("\nSe han hallado "+conflicts+ " conflictos IPA para el usuario "+key);
                             }
                         }
                         else{
@@ -160,18 +160,18 @@ public class LotRModel extends Model{
                         }
                     }
 
-                    
+                    /*
                     //guardo cada perfil parcial en la base de datos, en la coleccion de usuarios
                     this.savePartialProfiles(partialProfiles, userIDs);
                     //guardo en el campo de la partida en la base de datos que ya analice la partida
                     database.setAnalyzedGame((String)game.get("gameID"), modelName);
                     //imprimo resultado
-                    
+                    */
                     for (String key : partialProfiles.keySet()) {
                         window.consolePrint(key);
                         window.consolePrint(partialProfiles.get(key).toString());
                     }
-                    window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
+                    //window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
                     window.consolePrint("---------------------------------------------");
                 }
             }
@@ -265,19 +265,22 @@ public class LotRModel extends Model{
                     String user = (String)((JSONObject)votes.get(v)).get("alias");
                     if ((boolean)((JSONObject)votes.get(v)).get("agree") != agreement){
                         
-                            JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree");
+                            JSONArray values = this.getSymlogValues((JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree"),user);
                             partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));     
                         //partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                     }
                     else{
-                            JSONArray values = (JSONArray)((JSONObject)policy.get("forward_backward")).get("agree");
+                            JSONArray values = this.getSymlogValues((JSONArray)((JSONObject)policy.get("forward_backward")).get("agree"), user);
                             partialProfiles.get(user).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                         //partialProfiles.get(user).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                     }
+                    //ESTO HAY QUE REVISARLO+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                     JSONArray choices = new JSONArray();
-                    choices.add((JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree"));
-                    choices.add((JSONArray)((JSONObject)policy.get("forward_backward")).get("agree"));
+                    choices.add( this.getSymlogValues((JSONArray)((JSONObject)policy.get("forward_backward")).get("disagree"),user));
+                    choices.add(this.getSymlogValues((JSONArray)((JSONObject)policy.get("forward_backward")).get("agree"),user));
+                    
                     this.setRangePoll(choices, partialProfiles.get(user));
+                    //ESTO HAY QUE REVISARLO+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                     partialProfiles.get(user).sumInteraction();
                     v++;
                 }
@@ -316,34 +319,36 @@ public class LotRModel extends Model{
                         if (found){
                             
                             if ((boolean)vote.get("agree")){
-                                JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("self")).get("agree");
+                                JSONArray values= this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("self")).get("agree"),voter);
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                                 //partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
                             else{
-                                JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("self")).get("disagree");
+                                JSONArray values = this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("self")).get("disagree"), voter);
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                                 //partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
+                            //ESTO HAY QUE REVISARLO+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                             JSONArray choices = new JSONArray();
-                            choices.add((JSONArray)((JSONObject)up_down_policy.get("self")).get("disagree"));
-                            choices.add((JSONArray)((JSONObject)up_down_policy.get("self")).get("agree"));
+                            choices.add( this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("self")).get("disagree"),voter));
+                            choices.add( this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("self")).get("agree"),voter));
                             this.setRangePoll(choices, partialProfiles.get(voter));
                         }
                         else{
                             if ((boolean)vote.get("agree")){
-                                JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("others")).get("agree");
+                                JSONArray values = this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("others")).get("agree"),voter);
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                                 partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
                             else{
-                                JSONArray values = (JSONArray)((JSONObject)up_down_policy.get("others")).get("disagree");
+                                JSONArray values = this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("others")).get("disagree"),voter);
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                                 partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
+                            //ESTO HAY QUE REVISARLO+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                             JSONArray choices = new JSONArray();
-                            choices.add((JSONArray)((JSONObject)up_down_policy.get("others")).get("disagree"));
-                            choices.add((JSONArray)((JSONObject)up_down_policy.get("others")).get("agree"));
+                            choices.add( this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("others")).get("disagree"),voter));
+                            choices.add( this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("others")).get("agree"),voter));
                             this.setRangePoll(choices, partialProfiles.get(voter));
                         }
                         partialProfiles.get(voter).sumInteraction();

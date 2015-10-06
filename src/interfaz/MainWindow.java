@@ -435,6 +435,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_getGamesButtonActionPerformed
 
     private void cabezaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cabezaButtonActionPerformed
+        this.consolePrint("Analizando partidas... no cierre la aplicación.");
         this.consolePrint("\n ---------------------------------------------");
         analizador.analyzeGames(analysisInput);
     }//GEN-LAST:event_cabezaButtonActionPerformed
