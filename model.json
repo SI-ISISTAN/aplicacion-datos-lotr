@@ -97,20 +97,28 @@
 						"values" : [-1,1,1]}]
 					},
 					{"action" : "other",  "result" : [{
-						"conditions" : null,
-						"values" : [2,-2,-1]}]
+						"conditions" : [{"condition" : "HasMoreThanCards", "amount":10}],
+						"values" : [2,-2,-2]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [1,-2,0]},
+						]
 					}]
 			},
 			{"name": "DeadFaces",
 				"format" : "SimpleChoice",
 				"choices" : [
 					{"action" : "KillPlayer",  "result" : [{
-						"conditions" : null,
-						"values" : [2,-1,-2]}]
+						"conditions" : [{"condition" : "HasMoreThanCards", "amount":7}],
+						"values" : [-2,-2,-2]},
+						{"conditions" : [{"condition" : "HasEqualOrMoreTokens", "token":"shield", "amount":3}],
+						"values" : [-2,-2,-2]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [-1,-1,0]},
+						]
 					},
 					{"action" : "other",  "result" : [{
 						"conditions" : null,
-						"values" : [0,0,0]}]
+						"values" : [0,0,2]}]
 					}]
 			},
 			{"name": "NazgulRing",
@@ -121,8 +129,11 @@
 						"values" : [-2,1,0]}]
 					},
 					{"action" : "other",  "result" : [{
-						"conditions" : null,
-						"values" : [0,-2,0]}]
+						"conditions" : [{"condition" : "HasMoreThanCards", "amount":10}],
+						"values" : [1,-2,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,-2,0]},
+						]
 					}]
 			},
 			{"name": "ShelobAppear",
@@ -141,20 +152,26 @@
 				"format" : "SimpleChoice",
 				"choices" : [
 					{"action" : "ChangeToken",  "result" : [{
-						"conditions" : null,
-						"values" : [1,0,0]}]
+						"conditions" : [{"condition" : "HasEqualOrMoreTokens", "token":"shield", "amount":6}],
+						"values" : [0,0,1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [-1,0,0]}]
 					},
 					{"action" : "other",  "result" : [{
-						"conditions" : null,
-						"values" : [0,0,0]}]
+						"conditions" : [{"condition" : "HasEqualOrLessTokens", "token":"shield", "amount":3}],
+						"values" : [0,0,0]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [-1,0,-1]}]
 					}]
 			},
 			{"name": "PelennorFields",
 				"format" : "SimpleChoice",
 				"choices" : [
 					{"action" : "RollDie",  "result" : [{
-						"conditions" : null,
-						"values" : [-1,-1,0]}]
+						"conditions" : [{"condition" : "HasEqualOrMoreTokens", "token":"life", "amount":2}],
+						"values" : [-1,-2,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,0,0]}]
 					},
 					{"action" : "other",  "result" : [{
 						"conditions" : null,
@@ -165,8 +182,10 @@
 				"format" : "SimpleChoice",
 				"choices" : [
 					{"action" : "RollDie",  "result" : [{
-						"conditions" : null,
-						"values" : [-1,-1,0]}]
+						"conditions" : [{"condition" : "HasEqualOrMoreTokens", "token":"sun", "amount":2}],
+						"values" : [-1,-2,-1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [0,0,0]}]
 					},
 					{"action" : "other",  "result" : [{
 						"conditions" : null,
@@ -181,8 +200,12 @@
 						"values" : [0,0,0]}]
 					},
 					{"action" : "other",  "result" : [{
-						"conditions" : null,
-						"values" : [1,0,0]}]
+						"conditions" : [{"condition" : "HasFewerCards"}],
+						"values" : [1,0,1]},
+						{"conditions" : [{"condition" : "IsCloserToSauron"}],
+						"values" : [1,0,1]},
+						{"conditions" : [{"condition" : "other"}],
+						"values" : [2,-1,-1]}]
 					}]
 			},
 			{"name": "PlayGandalfCard",
