@@ -308,18 +308,24 @@
 				"up_down": {
 					"self" :{
 						"agree" :  [{
-							"conditions" : null,
-							"values" : [1,-1,0]
+							"conditions" : [{"condition" : "HasFewerCards"}],
+							"values" : [1,0,0]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [2,0,0]
 						}],
 						"disagree" : [{
-							"conditions" : null,
-							"values" : [-1,0,0]
+							"conditions" : [{"condition" : "HasFewerCards"}],
+							"values" : [-1,0,-1]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [0,1,0]
 						}]
 					},
 					"others" :{
 						"agree" :  [{
-							"conditions" : null,
-							"values" : [1,-1,0]
+							"conditions" : [{"condition" : "HasFewerCards"}],
+							"values" : [-2,1,0]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [0,1,1]
 						}],
 						"disagree" : [{
 							"conditions" : null,
@@ -344,18 +350,22 @@
 				"up_down": {
 					"self" :{
 						"agree" :  [{
-							"conditions" : null,
-							"values" : [-1,1,0]
+							"conditions" : [{"condition" : "HasFewerCards"}],
+							"values" : [-2,0,-1]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [-1,1,1]
 						}],
 						"disagree" : [{
-							"conditions" : null,
-							"values" : [1,0,0]
+							"conditions" : [{"condition" : "HasFewerCards"}],
+							"values" : [1,0,1]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [1,-1,0]
 						}]
 					},
 					"others" :{
 						"agree" :  [{
 							"conditions" : null,
-							"values" : [1,-1,0]
+							"values" : [0,0,1]
 						}],
 						"disagree" : [{
 							"conditions" : null,
@@ -418,18 +428,30 @@
 				"up_down": {
 					"self" :{
 						"agree" :  [{
-							"conditions" : null,
-							"values" : [-2,2,0]
+							"conditions" : [{"condition" : "IsCloserThan", "amount":3}],
+							"values" : [-3,3,-1]},
+							{"conditions" : [{"condition" : "IsFurtherThan", "amount": 6}],
+							"values" : [-1,2,2]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [-1,2,1]
 						}],
 						"disagree" : [{
-							"conditions" : null,
-							"values" : [0,0,0]
+							"conditions" : [{"condition" : "IsCloserThan", "amount":3}],
+							"values" : [-3,3,-1]},
+							{"conditions" : [{"condition" : "IsFurtherThan", "amount": 6}],
+							"values" : [-1,2,2]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [-1,2,1]
 						}]
 					},
 					"others" :{
 						"agree" :  [{
-							"conditions" : null,
-							"values" : [1,-1,0]
+							"conditions" : [{"condition" : "IsCloserThan", "amount":3}],
+							"values" : [0,0,2]},
+							{"conditions" : [{"condition" : "IsFurtherThan", "amount": 6}],
+							"values" : [1,0,-1]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [0,0,0]
 						}],
 						"disagree" : [{
 							"conditions" : null,
@@ -492,12 +514,20 @@
 				"up_down": {
 					"self" :{
 						"agree" :  [{
-							"conditions" : null,
-							"values" : [-2,2,0]
+							"conditions" : [{"condition" : "HasEqualOrLessTokens", "token": "shield", "amount":6}],
+							"values" : [-2,2,-1]},
+							{"conditions" : [{"condition" : "HasEqualOrMoreTokens", "token": "shield", "amount":10}],
+							"values" : [0,1,2]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [-1,1,0]
 						}],
 						"disagree" : [{
-							"conditions" : null,
-							"values" : [0,0,0]
+							"conditions" : [{"condition" : "HasEqualOrLessTokens", "token": "shield", "amount":6}],
+							"values" : [-2,2,-1]},
+							{"conditions" : [{"condition" : "HasEqualOrMoreTokens", "token": "shield", "amount":10}],
+							"values" : [0,1,2]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [-1,1,0]
 						}]
 					},
 					"others" :{
@@ -529,12 +559,20 @@
 				"up_down": {
 					"self" :{
 						"agree" :  [{
-							"conditions" : null,
-							"values" : [-1,1,10]
+							"conditions" : [{"condition" : "HasMoreThaCards", "amount":8}],
+							"values" : [0,1,1]},
+							{"conditions" : [{"condition" : "HasLessThanCards", "token": "shield", "amount":5}],
+							"values" : [-2,2,0]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [-1,1,0]
 						}],
 						"disagree" : [{
-							"conditions" : null,
-							"values" : [1,1,0]
+							"conditions" : [{"condition" : "HasMoreThaCards", "amount":8}],
+							"values" : [2,-1,-1]},
+							{"conditions" : [{"condition" : "HasLessThanCards", "token": "shield", "amount":5}],
+							"values" : [0,0,1]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [0,0,0]
 						}]
 					},
 					"others" :{
@@ -566,12 +604,20 @@
 				"up_down": {
 					"self" :{
 						"agree" :  [{
-							"conditions" : null,
-							"values" : [-1,1,0]
+							"conditions" : [{"condition" : "IsCloserThan", "amount":3}],
+							"values" : [-2,2,-1]},
+							{"conditions" : [{"condition" : "IsFurtherThan", "amount":5}],
+							"values" : [-1,1,1]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [0,1,0]
 						}],
 						"disagree" : [{
-							"conditions" : null,
-							"values" : [1,0,0]
+							"conditions" : [{"condition" : "IsCloserThan", "amount":3}],
+							"values" : [1,0,1]},
+							{"conditions" : [{"condition" : "IsFurtherThan", "amount":5}],
+							"values" : [2,-1,-1]},
+							{"conditions" : [{"condition" : "other"}],
+							"values" : [0,0,0]
 						}]
 					},
 					"others" :{

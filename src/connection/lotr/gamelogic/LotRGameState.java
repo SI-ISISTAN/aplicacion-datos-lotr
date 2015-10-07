@@ -190,6 +190,22 @@ public class LotRGameState {
                     ret=true;
                 }
             }
+            else if (condition.equals("IsCloserThan")){
+                long am = (long)conditionObj.get("amount");
+                int pos = players.get(player).getPosition();
+                int sauron = this.sauronPosition;
+                if (sauronPosition-pos <= am){
+                    ret=true;
+                }
+            }
+            else if (condition.equals("IsFurtherThan")){
+                long am = (long)conditionObj.get("amount");
+                int pos = players.get(player).getPosition();
+                int sauron = this.sauronPosition;
+                if (sauronPosition-pos >= am){
+                    ret=true;
+                }
+            }
             else if (condition.equals("IsCloserToSauron")){
                 int pos = players.get(player).getPosition();
                 int avg=0;

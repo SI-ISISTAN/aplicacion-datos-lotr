@@ -160,18 +160,18 @@ public class LotRModel extends Model{
                         }
                     }
 
-                    /*
+                    
                     //guardo cada perfil parcial en la base de datos, en la coleccion de usuarios
                     this.savePartialProfiles(partialProfiles, userIDs);
                     //guardo en el campo de la partida en la base de datos que ya analice la partida
                     database.setAnalyzedGame((String)game.get("gameID"), modelName);
                     //imprimo resultado
-                    */
+                    
                     for (String key : partialProfiles.keySet()) {
                         window.consolePrint(key);
                         window.consolePrint(partialProfiles.get(key).toString());
                     }
-                    //window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
+                    window.consolePrint("\nSe ha guardado en la base de datos el análisis.");
                     window.consolePrint("---------------------------------------------");
                 }
             }
