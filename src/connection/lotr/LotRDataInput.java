@@ -231,7 +231,6 @@ public class LotRDataInput extends DataInput{
     }
     
     public DBObject getConfig(String configName){
-        System.out.println(configName);
         DBCollection configsCollection = db.getCollection("configs");
         DBObject config = configsCollection.findOne();
         BasicDBList configs = (BasicDBList)config.get("configs");

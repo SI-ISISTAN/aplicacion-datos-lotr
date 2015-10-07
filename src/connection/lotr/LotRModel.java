@@ -90,7 +90,6 @@ public class LotRModel extends Model{
             DBObject[] playersArr = players.toArray(new DBObject[0]);
             //instancio el estado de juego con la configuracion inicial del juego
             gameState = new LotRGameState();
-            System.out.println("--------------------- NUEVA PARTIDA: ID "+(String)game.get("gameID")+" ---------------------");
             for(DBObject p : playersArr) {
               partialProfiles.put((String)p.get("alias"), new SymlogProfile());
               userIDs.put((String)p.get("alias"), (String)p.get("userID"));
@@ -177,7 +176,7 @@ public class LotRModel extends Model{
             }
             else{
                 //no hay data sobre la configuracion inicial
-                System.out.println("No hay datos sobre la configuracion inicial de la partida");
+                System.out.println("No hay datos sobre la configuracion inicial de la partida. Esto impide la reconstrucción del contexto. No se ha analizado la partida.");
             }
             
         }

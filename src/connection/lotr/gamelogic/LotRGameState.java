@@ -165,7 +165,7 @@ public class LotRGameState {
                         avg+=players.get(key).getCardsAmount();
                 }
                 avg=avg/players.size();
-                if (am<avg*1.5){
+                if (am*1.5<avg){
                     ret=true;
                 }
             }
