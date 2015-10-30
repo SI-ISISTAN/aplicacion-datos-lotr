@@ -115,7 +115,7 @@ public class MainWindow extends javax.swing.JFrame {
         consoleArea = new javax.swing.JTextPane();
         jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        metricsButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         chatList = new javax.swing.JComboBox();
@@ -197,10 +197,11 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Calcular metricas");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        metricsButton.setText("Calcular metricas");
+        metricsButton.setEnabled(false);
+        metricsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                metricsButtonActionPerformed(evt);
             }
         });
 
@@ -230,7 +231,7 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(349, 349, 349))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(metricsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(128, 128, 128)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -262,7 +263,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
-                    .addComponent(jButton2))
+                    .addComponent(metricsButton))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -473,6 +474,7 @@ public class MainWindow extends javax.swing.JFrame {
             model =  new LotRModel(this,(LotRDataInput)database,fc.getSelectedFile().getAbsolutePath());
             getGamesButton.setEnabled(true);
             resetAnalysisButton.setEnabled(true);
+            metricsButton.setEnabled(true);
         }
         
     }//GEN-LAST:event_loadJSONButtonActionPerformed
@@ -580,9 +582,9 @@ public class MainWindow extends javax.swing.JFrame {
 
     }//GEN-LAST:event_chatListItemStateChanged
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void metricsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_metricsButtonActionPerformed
         model.calculateMetrics();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_metricsButtonActionPerformed
                  
     
     public void enableModelLoad(){
@@ -656,7 +658,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTextPane consoleArea;
     private javax.swing.JButton getGamesButton;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
@@ -676,6 +677,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton loadJSONButton;
     private javax.swing.JTextArea messageArea;
     private javax.swing.JList messageList;
+    private javax.swing.JButton metricsButton;
     private javax.swing.JComboBox modelOptions;
     private javax.swing.JButton nextButton;
     private javax.swing.JLabel playerLabel;

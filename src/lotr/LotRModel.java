@@ -636,6 +636,10 @@ public class LotRModel extends Model{
                 window.consolePrint("Desviacion estándar: "+standardDeviation);
             }
         }
+        else{
+            window.consoleClean();
+            window.consolePrint("No se han hallado usuarios con datos de encuesta y de análisis.");
+        }
     }
 
 };
