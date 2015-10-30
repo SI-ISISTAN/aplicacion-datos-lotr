@@ -471,7 +471,17 @@ public class LotRModel extends Model{
                         double up_down = (double)symlog.get("up_down");
                         double positive_negative = (double)symlog.get("positive_negative");
                         double forward_backward = (double)symlog.get("forward_backward");
-                        long interactions = (long)symlog.get("interactions");
+                        //aparentemente parsea al tipo que mas le parece
+                        long interactions=0;
+                        if (symlog.get("interactions") instanceof Integer){
+                            Integer inter = (Integer)symlog.get("interactions");
+                            interactions = (long)inter;
+                        }
+                        else{
+                            interactions = (long)symlog.get("interactions");
+                        }
+                        
+ 
                         //po que???
                         if (interactions>0 && partial.getInteractions()>0){ 
                             long totalInteractions = interactions+partial.getInteractions();

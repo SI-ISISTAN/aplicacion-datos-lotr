@@ -144,8 +144,12 @@ public class LotRDataInput extends DataInput{
             while(users.hasNext()) {
                DBObject user = users.next();
                BasicDBObject symlog = (BasicDBObject) user.get("symlog");
+               String symlogModel=null;
                if (symlog!=null){
-                   if (modelName.equals(symlog.get("model"))){
+                   symlogModel= (String)symlog.get("model");
+               }
+               if (symlogModel!=null){
+                   if (modelName.equals(symlogModel)){
                        String userID = (String)((BasicDBObject)user.get("local")).get("userID");
                         BasicDBObject match = new BasicDBObject("local", new BasicDBObject("userID", userID));
                         BasicDBObject update2 = new BasicDBObject("symlog", new BasicDBObject());
