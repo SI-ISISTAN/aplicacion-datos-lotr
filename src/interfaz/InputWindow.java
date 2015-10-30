@@ -5,9 +5,9 @@
  */
 package interfaz;
 
-import connection.lotr.LotRDataInput;
-import connection.lotr.LotRLocalConnectionData;
-import connection.lotr.LotRRemoteConnectionData;
+import lotr.LotRDataInput;
+import lotr.LotRLocalConnectionData;
+import lotr.LotRRemoteConnectionData;
 import data.analyzer.InvalidInputException;
 import java.awt.event.WindowEvent;
 import java.net.UnknownHostException;

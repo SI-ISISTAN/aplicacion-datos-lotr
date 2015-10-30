@@ -3,26 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connection.lotr;
+package data.analyzer;
 
 /**
  *
  * @author matias
  */
-public class LotRIPAConflictSchema {
+public class IPAConflictSchema {
     long code;
     long interactions;
     double range_max;
     double range_min;
     
-    public LotRIPAConflictSchema(){
+    public IPAConflictSchema(){
         code=0;
         interactions =0;
         range_max = 0;
         range_min = 0;
     }
     
-     public LotRIPAConflictSchema(long cod, double min, double max){
+     public IPAConflictSchema(long cod, double min, double max){
         code=cod;
         interactions =0;
         range_max = max;
@@ -64,6 +64,4 @@ public class LotRIPAConflictSchema {
     public double getRange_min() {
         return range_min;
     }
-     
-     
 }

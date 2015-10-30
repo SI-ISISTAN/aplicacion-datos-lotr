@@ -10,5 +10,5 @@ package data.analyzer;
  * @author matias
  */
 public interface GameActionSchema {
-    
+    public abstract Object get(String attr);
 }

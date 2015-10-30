@@ -1,4 +1,4 @@
-package connection.lotr;
+package lotr;
 
 import data.analyzer.ConnectionData;
 import data.analyzer.DataInput;

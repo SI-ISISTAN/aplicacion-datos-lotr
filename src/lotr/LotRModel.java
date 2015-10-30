@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connection.lotr;
+package lotr;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import connection.lotr.gamelogic.LotRGameState;
 import data.analyzer.GameActionSchema;
 import data.analyzer.Model;
 import data.analyzer.GameSchema;
@@ -21,6 +20,7 @@ import data.analyzer.UserSchema;
 import interfaz.MainWindow;
 import java.util.ArrayList;
 import org.json.simple.JSONValue;
+import java.lang.Math;
 /**
  *
  * @author matias
@@ -176,7 +176,7 @@ public class LotRModel extends Model{
             }
             else{
                 //no hay data sobre la configuracion inicial
-                System.out.println("No hay datos sobre la configuracion inicial de la partida. Esto impide la reconstrucción del contexto. No se ha analizado la partida.");
+                window.consolePrint("No hay datos sobre la configuracion inicial de la partida. Esto impide la reconstrucción del contexto. No se ha analizado la partida.");
             }
             
         }
@@ -327,7 +327,6 @@ public class LotRModel extends Model{
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                                 //partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
-                            //ESTO HAY QUE REVISARLO+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                             JSONArray choices = new JSONArray();
                             choices.add( this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("self")).get("disagree"),voter));
                             choices.add( this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("self")).get("agree"),voter));
@@ -344,7 +343,6 @@ public class LotRModel extends Model{
                                 partialProfiles.get(voter).addValues((long)values.get(0), (long)values.get(1), (long)values.get(2));
                                 partialProfiles.get(voter).addToRangeSingle((long)values.get(0), (long)values.get(1), (long)values.get(2));
                             }
-                            //ESTO HAY QUE REVISARLO+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                             JSONArray choices = new JSONArray();
                             choices.add( this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("others")).get("disagree"),voter));
                             choices.add( this.getSymlogValues((JSONArray)((JSONObject)up_down_policy.get("others")).get("agree"),voter));
@@ -462,8 +460,12 @@ public class LotRModel extends Model{
                 SymlogProfile partial = partialProfiles.get(key);
                 ArrayList<Double> normalized = partialProfiles.get(key).getNormalizedProfile();
                 boolean addNewModel = false;
+                String symlogName=null;
                 if (symlog!=null){
-                    if (modelName.equals(symlog.get("model"))){
+                    symlogName=(String)symlog.get("model");
+                }
+                if (symlogName!=null){
+                    if (modelName.equals(symlogName)){
                         //Construyo el perfil agregando las interacciones que tengo
                         //Revisar esta pija
                         double up_down = (double)symlog.get("up_down");
@@ -585,6 +587,55 @@ public class LotRModel extends Model{
             i++;
         }
         return result;
+    }
+    
+    //calcular métricas del modelo
+    public void calculateMetrics(){
+        ArrayList<DBObject> users = database.getAllUsers();
+        double averageDistance=0;
+        double distanceSum=0;
+        int analyzed=0;
+        ArrayList<Double> distances = new ArrayList<Double>();
+        for (DBObject user : users){
+            if (user.get("symlog")!=null && user.get("survey")!=null){
+                if (((DBObject)user.get("symlog")).get("up_down")!= null && ((DBObject)user.get("symlog")).get("positive_negative")!= null && ((DBObject)user.get("symlog")).get("forward_backward")!= null && ((DBObject)user.get("symlog")).get("model")!= null){
+                    if ((boolean)((DBObject)user.get("survey")).get("complete")==true){               
+                        //si hay datos, calculo
+                        Integer ee1= (Integer)(((DBObject)((DBObject)user.get("survey")).get("result")).get("up_down"));
+                        double e1=(double)ee1;
+                        Integer ee2= (Integer)((DBObject)((DBObject)user.get("survey")).get("result")).get("positive_negative");
+                        double e2=(double)ee2;
+                        Integer ee3= (Integer)((DBObject)((DBObject)user.get("survey")).get("result")).get("forward_backward");
+                        double e3=(double)ee3;
+
+                        double s1= (Double)((DBObject)user.get("symlog")).get("up_down");
+                        double s2= (Double)((DBObject)user.get("symlog")).get("positive_negative");
+                        double s3= (Double)((DBObject)user.get("symlog")).get("forward_backward");
+
+                        double distance = ((e1*s1)+(e2*s2)+(e3*s3)) / ( Math.sqrt(Math.pow(e1,2)+Math.pow(e2,2)+Math.pow(e3,2)) * Math.sqrt(Math.pow(s1,2)+Math.pow(s2,2)+Math.pow(s3,2))) ;
+                        distanceSum+=distance;
+                        distances.add(distance);
+                        analyzed++;
+                    }
+                }
+            }
+        }
+        //si huo resultados
+        if (distances.size()>0){
+            double avg = distanceSum/analyzed;
+            window.consoleClean();
+            window.consolePrint("Se han analizado "+analyzed+" usuarios que poseen datos de encuesta y de análisis.");
+            window.consolePrint("Promedio de distancia modulado: "+avg);
+            double standardDeviation=0;
+            double auxSum=0;
+            for (Double d : distances){
+                auxSum+=Math.pow(d-avg, 2);
+            }
+            if ((double)distances.size()!=0 && auxSum!=0){
+                standardDeviation=Math.sqrt((1/((double)distances.size()-1)) * auxSum);
+                window.consolePrint("Desviacion estándar: "+standardDeviation);
+            }
+        }
     }
 
 };

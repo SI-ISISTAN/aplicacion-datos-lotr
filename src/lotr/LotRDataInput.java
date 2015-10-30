@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connection.lotr;
+package lotr;
 //Imports de MongoDB
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -277,5 +277,20 @@ public class LotRDataInput extends DataInput{
             
             i++;
         }
+    }
+    
+    public ArrayList<DBObject> getAllUsers(){
+        ArrayList<DBObject> ret = new ArrayList<DBObject>();
+        DBCollection usersCollection = db.getCollection("users");
+        DBCursor users = usersCollection.find();
+        try {
+            while(users.hasNext()) {
+                DBObject c = users.next();
+                ret.add((BasicDBObject) c);
+            }
+        } finally {
+            users.close();
+        }
+        return ret;
     }
 }

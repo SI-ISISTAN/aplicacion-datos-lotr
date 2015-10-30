@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import connection.lotr.*;
 /**
  *
  * @author matias

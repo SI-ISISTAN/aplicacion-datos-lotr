@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connection.lotr;
+package lotr;
 import com.mongodb.BasicDBList;
 import data.analyzer.GameSchema;
 import com.mongodb.DBObject;
 import data.analyzer.GameActionSchema;
 import java.util.ArrayList;
 import java.util.Arrays;
-import connection.lotr.LotRGameAction;
+import lotr.LotRGameAction;
 /**
  *
  * @author matias

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package connection.lotr.gamelogic;
+package lotr;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
-import connection.lotr.LotRGame;
-import connection.lotr.LotRGameAction;
+import lotr.LotRGame;
+import lotr.LotRGameAction;
 import java.util.Hashtable;
 import org.json.simple.JSONObject;
 

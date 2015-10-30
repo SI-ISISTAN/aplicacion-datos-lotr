@@ -71,34 +71,39 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel2" alignment="0" max="32767" attributes="0"/>
-                          <Component id="jLabel3" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="cabezaButton" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
-                                  <Component id="resetAnalysisButton" alignment="0" min="-2" pref="191" max="-2" attributes="0"/>
-                                  <Component id="loadJSONButton" min="-2" pref="196" max="-2" attributes="0"/>
-                                  <Component id="getGamesButton" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
-                                  <Component id="jLabel4" alignment="0" min="-2" pref="162" max="-2" attributes="0"/>
-                                  <Component id="modelOptions" alignment="0" min="-2" pref="196" max="-2" attributes="0"/>
+                                  <Component id="jLabel2" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jLabel3" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="cabezaButton" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
+                                          <Component id="resetAnalysisButton" alignment="0" min="-2" pref="191" max="-2" attributes="0"/>
+                                          <Component id="loadJSONButton" min="-2" pref="196" max="-2" attributes="0"/>
+                                          <Component id="getGamesButton" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
+                                          <Component id="jLabel4" alignment="0" min="-2" pref="162" max="-2" attributes="0"/>
+                                          <Component id="modelOptions" alignment="0" min="-2" pref="196" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jScrollPane1" min="-2" pref="434" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="349" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="jButton2" min="-2" pref="191" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="128" max="-2" attributes="0"/>
+                              <Component id="jButton4" min="-2" pref="189" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" min="-2" pref="434" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="349" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="331" max="-2" attributes="0"/>
-                      <Component id="jButton4" min="-2" pref="189" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -129,7 +134,10 @@
                           <Component id="jScrollPane1" min="-2" pref="285" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jButton4" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace pref="20" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -222,6 +230,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Calcular metricas"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
