@@ -609,7 +609,7 @@ public class LotRModel extends Model{
         for (DBObject user : users){
             if (user.get("symlog")!=null && user.get("survey")!=null){
                 if (((DBObject)user.get("symlog")).get("up_down")!= null && ((DBObject)user.get("symlog")).get("positive_negative")!= null && ((DBObject)user.get("symlog")).get("forward_backward")!= null && ((DBObject)user.get("symlog")).get("model")!= null){
-                    if ((boolean)((DBObject)user.get("survey")).get("complete")==true){               
+                    if ((boolean)((DBObject)user.get("survey")).get("complete")==true && modelName.equals((String)((DBObject)user.get("symlog")).get("model"))){               
                         //si hay datos, calculo
                         Integer ee1= (Integer)(((DBObject)((DBObject)user.get("survey")).get("result")).get("up_down"));
                         double e1=(double)ee1;
@@ -634,8 +634,8 @@ public class LotRModel extends Model{
         if (distances.size()>0){
             double avg = distanceSum/analyzed;
             window.consoleClean();
-            window.consolePrint("Se han analizado "+analyzed+" usuarios que poseen datos de encuesta y de análisis.");
-            window.consolePrint("Promedio de distancia modulado: "+avg);
+            window.consolePrint("Se han analizado "+analyzed+" usuarios que poseen datos de encuesta y de análisis utilizando este modelo.");
+            window.consolePrint("Promedio de similitud del coseno: "+avg);
             double standardDeviation=0;
             double auxSum=0;
             for (Double d : distances){
