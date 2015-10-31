@@ -6,16 +6,21 @@
 package lotr.socket;
 
 
+import interfaz.MainWindow;
 import io.socket.client.*;
 import io.socket.backo.*;
+import io.socket.emitter.Emitter;
 import io.socket.hasbinary.*;
 import io.socket.parser.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import org.json.JSONArray;
 //import org.json.simple.JSONException;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 /**
  *
@@ -23,21 +28,50 @@ import org.json.simple.JSONObject;
  */
 public class SocketIOConnection {
     
-    public SocketIOConnection() throws MalformedURLException, URISyntaxException{
-           Socket socket = IO.socket("http://localhost:3000");
-           /*
+    private MainWindow window;
+    private ArrayList<String> ongoingGames;
+    private final Socket socket;
+    
+    public SocketIOConnection(MainWindow w) throws MalformedURLException, URISyntaxException{
+        window=w;
+        ongoingGames=new ArrayList<>();
+
+         socket = IO.socket("http://localhost:3000");
+           
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
               @Override
               public void call(Object... args) {
-                socket.emit("foo", "hi");
-                socket.disconnect();
+                //socket.emit("foo", "hi");
+                //socket.disconnect();
               }
 
-            }).on("event", new Emitter.Listener() {
-
+            }).on("hello message", new Emitter.Listener() {
+                
               @Override
-              public void call(Object... args) {}
+              public void call(Object... args) {
+                  socket.emit("admin connect");
+              }
+            }).on("send lobby info", new Emitter.Listener() {
+                
+              @Override
+              public void call(Object... args) {
+                  JSONArray games = (JSONArray)(((JSONObject)args[0]).get("games"));
+                  //agrego las cosas halladas a la lista
+                  for (int i=0;i<games.length();i++){
+                      ongoingGames.add((String)((JSONObject)games.get(i)).get("gameID"));
+                  }
+                  window.loadGamesLists(ongoingGames);
+              }
+              //se agrega un nuevo juego a los activos
+             }).on("game finished", new Emitter.Listener() {
+                
+              @Override
+              public void call(Object... args) {
+                  System.out.println("Me llego clanerooo");
+                  ongoingGames.add((String)(((JSONObject)args[0]).get("gameID")));
+                  window.loadGamesLists(ongoingGames);
+              }
 
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
@@ -46,7 +80,11 @@ public class SocketIOConnection {
 
             });
             socket.connect();
-                   */
+                   
+    }
+    
+    public void connectToGame(String gameID){
+        socket.emit("admin join game", gameID);
     }
     
 }
