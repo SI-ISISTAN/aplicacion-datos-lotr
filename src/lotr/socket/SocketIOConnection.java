@@ -32,11 +32,11 @@ public class SocketIOConnection {
     private ArrayList<String> ongoingGames;
     private final Socket socket;
     
-    public SocketIOConnection(MainWindow w) throws MalformedURLException, URISyntaxException{
+    public SocketIOConnection(MainWindow w, String url) throws MalformedURLException, URISyntaxException{
         window=w;
         ongoingGames=new ArrayList<>();
 
-         socket = IO.socket("http://localhost:3000");
+         socket = IO.socket(url);
            
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
@@ -58,6 +58,7 @@ public class SocketIOConnection {
               public void call(Object... args) {
                   JSONArray games = (JSONArray)(((JSONObject)args[0]).get("games"));
                   //agrego las cosas halladas a la lista
+                  ongoingGames=new ArrayList<>();
                   for (int i=0;i<games.length();i++){
                       ongoingGames.add((String)((JSONObject)games.get(i)).get("gameID"));
                   }
@@ -79,7 +80,13 @@ public class SocketIOConnection {
               public void call(Object... args) {
                         window.addChatMessage(((String)((JSONObject)((JSONObject)args[0]).get("player")).get("alias"))+": "+((String)((JSONObject)args[0]).get("msg"))+"\n");
               }
-              
+                }).on("admin message", new Emitter.Listener() {
+                
+              @Override
+              public void call(Object... args) {
+                        window.addChatMessage("Administrador: "+((String)((JSONObject)args[0]).get("msg"))+"\n");
+              }
+                
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
               @Override
@@ -104,6 +111,10 @@ public class SocketIOConnection {
     
     public void disconnectFromGame(String gameID){
         socket.emit("admin leave game", gameID);
+    }
+    
+    public void sendMessage(String gameID, String msg){
+        socket.emit("admin message", gameID, msg);
     }
     
 }

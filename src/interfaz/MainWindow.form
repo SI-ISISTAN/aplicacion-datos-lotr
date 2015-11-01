@@ -485,7 +485,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="jTextField1" max="32767" attributes="0"/>
+                              <Component id="urlArea" max="32767" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="socketConnectButton" min="-2" pref="164" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -519,7 +519,7 @@
                       <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="urlArea" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="socketConnectButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="socketDisconnectButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -597,7 +597,7 @@
                 <Property name="text" type="java.lang.String" value="URL de servidor"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="jTextField1">
+            <Component class="javax.swing.JTextField" name="urlArea">
             </Component>
             <Component class="javax.swing.JButton" name="disconnectFromGameButton">
               <Properties>
@@ -645,6 +645,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sendAreaActionPerformed"/>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="sendAreaKeyPressed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel16">

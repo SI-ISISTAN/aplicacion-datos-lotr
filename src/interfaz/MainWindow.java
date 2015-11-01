@@ -21,6 +21,7 @@ import lotr.LotRModel;
 import data.analyzer.DataInput;
 import data.analyzer.InvalidInputException;
 import data.analyzer.Model;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -76,6 +77,7 @@ public class MainWindow extends javax.swing.JFrame {
     
     public void loadGamesLists(ArrayList<String> ongoingGames){
         DefaultListModel listmodel = new DefaultListModel();
+        System.out.println(ongoingGames.size());
         for (String game : ongoingGames){
             listmodel.addElement(game);
         }
@@ -154,7 +156,7 @@ public class MainWindow extends javax.swing.JFrame {
         ongoingGamesList = new javax.swing.JList();
         socketDisconnectButton = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        urlArea = new javax.swing.JTextField();
         disconnectFromGameButton = new javax.swing.JButton();
         connectToGameButton = new javax.swing.JButton();
         jLabel15 = new javax.swing.JLabel();
@@ -494,6 +496,11 @@ public class MainWindow extends javax.swing.JFrame {
                 sendAreaActionPerformed(evt);
             }
         });
+        sendArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                sendAreaKeyPressed(evt);
+            }
+        });
 
         jLabel16.setText("Enviar mensaje");
 
@@ -505,7 +512,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jTextField1)
+                        .addComponent(urlArea)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(socketConnectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -532,7 +539,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(urlArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(socketConnectButton)
                     .addComponent(socketDisconnectButton))
                 .addGap(18, 18, 18)
@@ -737,7 +744,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void socketConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_socketConnectButtonActionPerformed
         try {
             // TEST DE IOCONNECTION //////////////
-            socketConnection = new SocketIOConnection(this);
+            socketConnection = new SocketIOConnection(this, urlArea.getText());
             socketConnectButton.setEnabled(false);
             socketDisconnectButton.setEnabled(true);
             ongoingGamesList.setEnabled(true);
@@ -753,7 +760,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void socketDisconnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_socketDisconnectButtonActionPerformed
         socketConnection.disconnect();
         socketConnectButton.setEnabled(true);
-        socketConnectButton.setEnabled(false);
+        socketDisconnectButton.setEnabled(false);
         ongoingGamesList.setModel(new DefaultListModel());
         ongoingGamesList.setEnabled(false);
         connectToGameButton.setEnabled(false);
@@ -766,6 +773,7 @@ public class MainWindow extends javax.swing.JFrame {
         currentGame=null;
         chatsArea.setEnabled(false);
         sendArea.setEnabled(false);
+        ongoingGamesList.setModel(new DefaultListModel());
         ongoingGamesList.setEnabled(true);
         connectToGameButton.setEnabled(true);
         disconnectFromGameButton.setEnabled(false);
@@ -775,19 +783,28 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_disconnectFromGameButtonActionPerformed
 
     private void connectToGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectToGameButtonActionPerformed
-        String gameID = (String)ongoingGamesList.getSelectedValue();
-        currentGame=gameID;
-        socketConnection.connectToGame(gameID);
-        chatsArea.setEnabled(true);
-        sendArea.setEnabled(true);
-        ongoingGamesList.setEnabled(false);
-        connectToGameButton.setEnabled(false);
-        disconnectFromGameButton.setEnabled(true);
+        if (ongoingGamesList.getSelectedValue()!=null){    
+            String gameID = (String)ongoingGamesList.getSelectedValue();
+            currentGame=gameID;
+            socketConnection.connectToGame(gameID);
+            chatsArea.setEnabled(true);
+            sendArea.setEnabled(true);
+            ongoingGamesList.setEnabled(false);
+            connectToGameButton.setEnabled(false);
+            disconnectFromGameButton.setEnabled(true);
+        }
     }//GEN-LAST:event_connectToGameButtonActionPerformed
 
     private void sendAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendAreaActionPerformed
         
     }//GEN-LAST:event_sendAreaActionPerformed
+
+    private void sendAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sendAreaKeyPressed
+       if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            socketConnection.sendMessage(currentGame,sendArea.getText());
+            sendArea.setText("");
+       }
+    }//GEN-LAST:event_sendAreaKeyPressed
                  
     
     public void enableModelLoad(){
@@ -887,7 +904,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loadJSONButton;
     private javax.swing.JTextArea messageArea;
     private javax.swing.JList messageList;
@@ -902,5 +918,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton socketConnectButton;
     private javax.swing.JButton socketDisconnectButton;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JTextField urlArea;
     // End of variables declaration//GEN-END:variables
 }
