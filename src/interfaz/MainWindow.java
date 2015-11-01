@@ -751,9 +751,9 @@ public class MainWindow extends javax.swing.JFrame {
             connectToGameButton.setEnabled(true);
             // TEST DE IOCONNECTION //////////////
         } catch (MalformedURLException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (URISyntaxException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_socketConnectButtonActionPerformed
 

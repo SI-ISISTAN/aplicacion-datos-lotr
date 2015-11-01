@@ -30,7 +30,7 @@ public class SocketIOConnection {
     
     private MainWindow window;
     private ArrayList<String> ongoingGames;
-    private final Socket socket;
+    private Socket socket;
     
     public SocketIOConnection(MainWindow w, String url) throws MalformedURLException, URISyntaxException{
         window=w;
@@ -42,8 +42,6 @@ public class SocketIOConnection {
 
               @Override
               public void call(Object... args) {
-                //socket.emit("foo", "hi");
-                //socket.disconnect();
               }
 
             }).on("hello message", new Emitter.Listener() {
