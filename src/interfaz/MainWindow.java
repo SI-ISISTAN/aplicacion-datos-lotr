@@ -35,7 +35,7 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import lotr.socket.SocketIOConnection;
+import lotr.SocketIOConnection;
 import org.json.JSONObject;
 /**
  *
