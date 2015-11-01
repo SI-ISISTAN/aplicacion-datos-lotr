@@ -50,6 +50,7 @@ public class MainWindow extends javax.swing.JFrame {
     private ArrayList<GameSchema> analysisInput;
     private ArrayList<BasicDBObject> currentChat;
     private SocketIOConnection socketConnection = null;
+    String currentGame=null;
     
     //Variables extra para chequeos de estado
     private int prevChatIndex = 0;
@@ -82,12 +83,10 @@ public class MainWindow extends javax.swing.JFrame {
         ongoingGamesList.setSelectedIndex(0);
     }
     
-    public void addToGameList(String id){
+    public void addChatMessage(String msg){
+        chatsArea.append(msg);
     }
     
-    public void removeFromGameList(String id){
-        
-    }
     /**
      * Creates new form MainWindow
      */
@@ -156,14 +155,13 @@ public class MainWindow extends javax.swing.JFrame {
         socketDisconnectButton = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        connectToGame = new javax.swing.JButton();
-        connectToGame1 = new javax.swing.JButton();
-        jLabel14 = new javax.swing.JLabel();
+        disconnectFromGameButton = new javax.swing.JButton();
+        connectToGameButton = new javax.swing.JButton();
         jLabel15 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        messageArea1 = new javax.swing.JTextArea();
         jScrollPane5 = new javax.swing.JScrollPane();
-        messageArea2 = new javax.swing.JTextArea();
+        chatsArea = new javax.swing.JTextArea();
+        sendArea = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Analizador de Datos - LotR");
@@ -453,9 +451,11 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel12.setText("Partidas en ejecución");
 
         ongoingGamesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        ongoingGamesList.setEnabled(false);
         jScrollPane6.setViewportView(ongoingGamesList);
 
         socketDisconnectButton.setText("Desconectar");
+        socketDisconnectButton.setEnabled(false);
         socketDisconnectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 socketDisconnectButtonActionPerformed(evt);
@@ -464,33 +464,38 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel13.setText("URL de servidor");
 
-        connectToGame.setText("Desconectar");
-        connectToGame.addActionListener(new java.awt.event.ActionListener() {
+        disconnectFromGameButton.setText("Desconectar");
+        disconnectFromGameButton.setEnabled(false);
+        disconnectFromGameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                connectToGameActionPerformed(evt);
+                disconnectFromGameButtonActionPerformed(evt);
             }
         });
 
-        connectToGame1.setText("Conectar a partida");
-        connectToGame1.addActionListener(new java.awt.event.ActionListener() {
+        connectToGameButton.setText("Conectar a partida");
+        connectToGameButton.setEnabled(false);
+        connectToGameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                connectToGame1ActionPerformed(evt);
+                connectToGameButtonActionPerformed(evt);
             }
         });
-
-        jLabel14.setText("Acciones de juego");
 
         jLabel15.setText("Mensajes");
 
-        messageArea1.setEditable(false);
-        messageArea1.setColumns(20);
-        messageArea1.setRows(5);
-        jScrollPane4.setViewportView(messageArea1);
+        chatsArea.setEditable(false);
+        chatsArea.setColumns(20);
+        chatsArea.setRows(5);
+        chatsArea.setEnabled(false);
+        jScrollPane5.setViewportView(chatsArea);
 
-        messageArea2.setEditable(false);
-        messageArea2.setColumns(20);
-        messageArea2.setRows(5);
-        jScrollPane5.setViewportView(messageArea2);
+        sendArea.setEnabled(false);
+        sendArea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendAreaActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setText("Enviar mensaje");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -510,27 +515,20 @@ public class MainWindow extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(connectToGame, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(connectToGame1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
-                        .addGap(37, 37, 37)
+                            .addComponent(disconnectFromGameButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(connectToGameButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                                .addGap(83, 83, 83)))
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(61, 61, 61))
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                            .addComponent(sendArea)
+                            .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -540,19 +538,22 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(jLabel14)
                     .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(connectToGame1)
+                        .addComponent(connectToGameButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(connectToGame))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                        .addComponent(disconnectFromGameButton))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sendArea, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(25, 25, 25))
         );
 
         tabbedPane.addTab("Conectar a servidor", jPanel3);
@@ -737,6 +738,10 @@ public class MainWindow extends javax.swing.JFrame {
         try {
             // TEST DE IOCONNECTION //////////////
             socketConnection = new SocketIOConnection(this);
+            socketConnectButton.setEnabled(false);
+            socketDisconnectButton.setEnabled(true);
+            ongoingGamesList.setEnabled(true);
+            connectToGameButton.setEnabled(true);
             // TEST DE IOCONNECTION //////////////
         } catch (MalformedURLException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -746,17 +751,43 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_socketConnectButtonActionPerformed
 
     private void socketDisconnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_socketDisconnectButtonActionPerformed
-        // TODO add your handling code here:
+        socketConnection.disconnect();
+        socketConnectButton.setEnabled(true);
+        socketConnectButton.setEnabled(false);
+        ongoingGamesList.setModel(new DefaultListModel());
+        ongoingGamesList.setEnabled(false);
+        connectToGameButton.setEnabled(false);
+        disconnectFromGameButton.setEnabled(false);
     }//GEN-LAST:event_socketDisconnectButtonActionPerformed
 
-    private void connectToGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectToGameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_connectToGameActionPerformed
+    private void disconnectFromGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectFromGameButtonActionPerformed
 
-    private void connectToGame1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectToGame1ActionPerformed
+        socketConnection.disconnectFromGame(currentGame);
+        currentGame=null;
+        chatsArea.setEnabled(false);
+        sendArea.setEnabled(false);
+        ongoingGamesList.setEnabled(true);
+        connectToGameButton.setEnabled(true);
+        disconnectFromGameButton.setEnabled(false);
+        chatsArea.setText("");
+        sendArea.setText("");
+        socketConnection.refreshLobbyInfo();
+    }//GEN-LAST:event_disconnectFromGameButtonActionPerformed
+
+    private void connectToGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectToGameButtonActionPerformed
         String gameID = (String)ongoingGamesList.getSelectedValue();
+        currentGame=gameID;
         socketConnection.connectToGame(gameID);
-    }//GEN-LAST:event_connectToGame1ActionPerformed
+        chatsArea.setEnabled(true);
+        sendArea.setEnabled(true);
+        ongoingGamesList.setEnabled(false);
+        connectToGameButton.setEnabled(false);
+        disconnectFromGameButton.setEnabled(true);
+    }//GEN-LAST:event_connectToGameButtonActionPerformed
+
+    private void sendAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendAreaActionPerformed
+        
+    }//GEN-LAST:event_sendAreaActionPerformed
                  
     
     public void enableModelLoad(){
@@ -827,9 +858,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox IPAButton;
     private javax.swing.JButton cabezaButton;
     private javax.swing.JComboBox chatList;
-    private javax.swing.JButton connectToGame;
-    private javax.swing.JButton connectToGame1;
+    private javax.swing.JTextArea chatsArea;
+    private javax.swing.JButton connectToGameButton;
     private javax.swing.JTextPane consoleArea;
+    private javax.swing.JButton disconnectFromGameButton;
     private javax.swing.JButton getGamesButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
@@ -838,8 +870,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -853,14 +885,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loadJSONButton;
     private javax.swing.JTextArea messageArea;
-    private javax.swing.JTextArea messageArea1;
-    private javax.swing.JTextArea messageArea2;
     private javax.swing.JList messageList;
     private javax.swing.JButton metricsButton;
     private javax.swing.JComboBox modelOptions;
@@ -869,6 +898,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel playerLabel;
     private javax.swing.JButton prevButton;
     private javax.swing.JButton resetAnalysisButton;
+    private javax.swing.JTextField sendArea;
     private javax.swing.JButton socketConnectButton;
     private javax.swing.JButton socketDisconnectButton;
     private javax.swing.JTabbedPane tabbedPane;

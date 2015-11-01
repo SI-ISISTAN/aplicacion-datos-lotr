@@ -68,11 +68,18 @@ public class SocketIOConnection {
                 
               @Override
               public void call(Object... args) {
-                  System.out.println("Me llego clanerooo");
+
                   ongoingGames.add((String)(((JSONObject)args[0]).get("gameID")));
                   window.loadGamesLists(ongoingGames);
               }
-
+              
+              }).on("recieve message", new Emitter.Listener() {
+                
+              @Override
+              public void call(Object... args) {
+                        window.addChatMessage(((String)((JSONObject)((JSONObject)args[0]).get("player")).get("alias"))+": "+((String)((JSONObject)args[0]).get("msg"))+"\n");
+              }
+              
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
               @Override
@@ -83,8 +90,20 @@ public class SocketIOConnection {
                    
     }
     
+    public void disconnect(){
+        socket.disconnect();
+    }
+    
     public void connectToGame(String gameID){
         socket.emit("admin join game", gameID);
+    }
+    
+    public void refreshLobbyInfo(){
+        socket.emit("ask lobby info");
+    }
+    
+    public void disconnectFromGame(String gameID){
+        socket.emit("admin leave game", gameID);
     }
     
 }
