@@ -77,7 +77,6 @@ public class MainWindow extends javax.swing.JFrame {
     
     public void loadGamesLists(ArrayList<String> ongoingGames){
         DefaultListModel listmodel = new DefaultListModel();
-        System.out.println(ongoingGames.size());
         for (String game : ongoingGames){
             listmodel.addElement(game);
         }
@@ -764,6 +763,8 @@ public class MainWindow extends javax.swing.JFrame {
         ongoingGamesList.setModel(new DefaultListModel());
         ongoingGamesList.setEnabled(false);
         connectToGameButton.setEnabled(false);
+        chatsArea.setText("");
+        sendArea.setText("");
         disconnectFromGameButton.setEnabled(false);
     }//GEN-LAST:event_socketDisconnectButtonActionPerformed
 
