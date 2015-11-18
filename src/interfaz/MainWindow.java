@@ -5,7 +5,9 @@
  */
 package interfaz;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import data.analyzer.UserSchema;
 import data.analyzer.DataAnalyzer;
 import data.analyzer.GameSchema;
@@ -19,6 +21,7 @@ import javax.swing.text.Document;
 import lotr.LotRDataInput;
 import lotr.LotRModel;
 import data.analyzer.DataInput;
+import data.analyzer.GameActionSchema;
 import data.analyzer.InvalidInputException;
 import data.analyzer.Model;
 import java.awt.event.KeyEvent;
@@ -35,7 +38,10 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import lotr.LotRGame;
+import lotr.LotRGameAction;
 import lotr.SocketIOConnection;
+import lotr.StatProfile;
 import org.json.JSONObject;
 /**
  *
@@ -99,7 +105,7 @@ public class MainWindow extends javax.swing.JFrame {
         //opciones de configuracion y carga hard
         messageList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ls.add("Modelo 1");
-        modelOptions.setModel(new DefaultComboBoxModel(ls.toArray()));
+        //modelOptions.setModel(new DefaultComboBoxModel(ls.toArray()));
         FileFilter filter = new FileNameExtensionFilter("Archivo JSON","json");
         fc.setFileFilter(filter);
         tabbedPane.setEnabledAt(1, false);
@@ -119,19 +125,18 @@ public class MainWindow extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         tabbedPane = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        modelOptions = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
-        loadJSONButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         getGamesButton = new javax.swing.JButton();
-        cabezaButton = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
-        resetAnalysisButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         consoleArea = new javax.swing.JTextPane();
         jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
-        metricsButton = new javax.swing.JButton();
+        getUsersButton = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        getChatsButton = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        statsButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         chatList = new javax.swing.JComboBox();
@@ -147,7 +152,6 @@ public class MainWindow extends javax.swing.JFrame {
         IPAButton = new javax.swing.JComboBox();
         jLabel10 = new javax.swing.JLabel();
         playerLabel = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         socketConnectButton = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
@@ -174,20 +178,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        modelOptions.setEnabled(false);
-
-        jLabel3.setText("Modelo de análisis");
+        jLabel3.setText("Usuarios");
         jLabel3.setName(""); // NOI18N
 
-        loadJSONButton.setText("Cargar JSON para modelo");
-        loadJSONButton.setEnabled(false);
-        loadJSONButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadJSONButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Partidas sin analizar");
+        jLabel2.setText("Partidas");
         jLabel2.setName(""); // NOI18N
 
         getGamesButton.setText("Buscar partidas");
@@ -195,24 +189,6 @@ public class MainWindow extends javax.swing.JFrame {
         getGamesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 getGamesButtonActionPerformed(evt);
-            }
-        });
-
-        cabezaButton.setText("Analizar");
-        cabezaButton.setEnabled(false);
-        cabezaButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cabezaButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setText("Acciones generales");
-
-        resetAnalysisButton.setText("Resetear análisis");
-        resetAnalysisButton.setEnabled(false);
-        resetAnalysisButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetAnalysisButtonActionPerformed(evt);
             }
         });
 
@@ -228,11 +204,33 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        metricsButton.setText("Calcular metricas");
-        metricsButton.setEnabled(false);
-        metricsButton.addActionListener(new java.awt.event.ActionListener() {
+        getUsersButton.setText("Buscar usuarios");
+        getUsersButton.setEnabled(false);
+        getUsersButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                metricsButtonActionPerformed(evt);
+                getUsersButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Chats");
+        jLabel4.setName(""); // NOI18N
+
+        getChatsButton.setText("Buscar chats");
+        getChatsButton.setEnabled(false);
+        getChatsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                getChatsButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Estadísticas");
+        jLabel7.setName(""); // NOI18N
+
+        statsButton.setText("Generar estadísticas");
+        statsButton.setEnabled(false);
+        statsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                statsButtonActionPerformed(evt);
             }
         });
 
@@ -247,14 +245,14 @@ public class MainWindow extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cabezaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(resetAnalysisButton, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(loadJSONButton, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(getGamesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(modelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(getGamesButton, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                                    .addComponent(getUsersButton, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                                    .addComponent(getChatsButton, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                                    .addComponent(statsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,8 +260,7 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(349, 349, 349))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(metricsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(128, 128, 128)
+                        .addGap(319, 319, 319)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
@@ -273,29 +270,27 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(modelOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(loadJSONButton)
-                        .addGap(25, 25, 25)
+                        .addComponent(getUsersButton)
+                        .addGap(27, 27, 27)
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(getGamesButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cabezaButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(getGamesButton)
+                        .addGap(33, 33, 33)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(resetAnalysisButton))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(metricsButton))
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addComponent(getChatsButton)
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(statsButton))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jButton4)
+                .addContainerGap())
         );
 
         tabbedPane.addTab("Análisis de partidas", jPanel1);
@@ -347,6 +342,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel9.setText("Categoria");
 
         IPAButton.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No categorizado", "C1 - Muestra Solidaridad", "C2 - Muestra descarga de tensión", "C3 - Muestra aceptación pasiva", "C4 - Da sugerencia", "C5 - Da opinión", "C6 - Da información", "C7 - Pide orientación", "C8 - Pide opinión", "C9 - Pide sugerencia", "C10 - Está en desacuerdo", "C11 - Muestra tensión", "C12 - Muestra antagonismo", "C13 - Otra categoría 1", "C14 - Otra categoría 2", "C15 - Otra categoría 3", "C16 - Otra categoría 4" }));
+        IPAButton.setEnabled(false);
         IPAButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 IPAButtonMouseClicked(evt);
@@ -364,13 +360,6 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         jLabel10.setText("Jugador:");
-
-        jButton1.setText("Guardar análisis");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -403,7 +392,6 @@ public class MainWindow extends javax.swing.JFrame {
                         .addComponent(prevButton, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(IPAButton, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
@@ -412,10 +400,8 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(chatList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                .addGap(10, 10, 10)
+                .addComponent(chatList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(playerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -437,7 +423,7 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(nextButton)
                             .addComponent(prevButton)))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Análisis de chats", jPanel2);
@@ -581,8 +567,8 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         pack();
@@ -590,10 +576,9 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void getGamesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getGamesButtonActionPerformed
-        try {
-            analizador = new DataAnalyzer(database, model);
-            analysisInput = analizador.getUnanalizedGames();
-            ArrayList<UserSchema> users = analizador.getUsers();
+
+            analysisInput = database.getUnanalizedGames();
+            ArrayList<UserSchema> users = database.getUsers();
             String [] userIDs = new String[users.size()];
             int i =0;
             for (UserSchema user : users){
@@ -601,48 +586,22 @@ public class MainWindow extends javax.swing.JFrame {
                 userIDs[i]= user.getKeyAttribute();
                 i++;
             }
-            this.consolePrint("Se han hallado "+(analysisInput.size())+" partidas sin analizar.");
+            this.consolePrint("Se han hallado "+database.getGames().size()+" partidas en la base de datos. \n");
+            this.consolePrint((analysisInput.size())+" de estas partidas no han sido analizadas. \n");
             if (analysisInput.size()>0){
-                cabezaButton.setEnabled(true);
+                //cabezaButton.setEnabled(true);
             }
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
     }//GEN-LAST:event_getGamesButtonActionPerformed
-
-    private void cabezaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cabezaButtonActionPerformed
-        this.consolePrint("Analizando partidas... no cierre la aplicación.");
-        this.consolePrint("\n ---------------------------------------------");
-        analizador.analyzeGames(analysisInput);
-    }//GEN-LAST:event_cabezaButtonActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         InputWindow w1 = new InputWindow(this);
         w1.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void loadJSONButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadJSONButtonActionPerformed
-        int returnVal = fc.showOpenDialog(this);
-        if (fc.getSelectedFile()!=null){
-            model =  new LotRModel(this,(LotRDataInput)database,fc.getSelectedFile().getAbsolutePath());
-            getGamesButton.setEnabled(true);
-            resetAnalysisButton.setEnabled(true);
-            metricsButton.setEnabled(true);
-        }
-        
-    }//GEN-LAST:event_loadJSONButtonActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         consoleArea.setText("");
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void resetAnalysisButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetAnalysisButtonActionPerformed
-        consoleArea.setText("");
-        ((LotRDataInput)database).resetAnalysis(((LotRModel)model).getModelName());  
-        this.consolePrint("Se ha reseteado el análisis.");
-        this.consolePrint("---------------------------------------------");
-    }//GEN-LAST:event_resetAnalysisButtonActionPerformed
 
     private void messageListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_messageListValueChanged
 
@@ -718,11 +677,6 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_IPAButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ((LotRDataInput)database).saveChatAnalysis(chatList.getSelectedItem().toString(), currentChat);
-        JOptionPane.showMessageDialog(this, "Se han guardado todos los cambios para este chat.");
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void IPAButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_IPAButtonMouseClicked
 
  
@@ -735,10 +689,6 @@ public class MainWindow extends javax.swing.JFrame {
     private void chatListItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chatListItemStateChanged
 
     }//GEN-LAST:event_chatListItemStateChanged
-
-    private void metricsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_metricsButtonActionPerformed
-        model.calculateMetrics();
-    }//GEN-LAST:event_metricsButtonActionPerformed
 
     private void socketConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_socketConnectButtonActionPerformed
         try {
@@ -806,11 +756,153 @@ public class MainWindow extends javax.swing.JFrame {
             sendArea.setText("");
        }
     }//GEN-LAST:event_sendAreaKeyPressed
+
+    private void getUsersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getUsersButtonActionPerformed
+
+        this.consolePrint("Hay "+database.getUsers().size()+" usuarios registrados en la base de datos. \n");
+    }//GEN-LAST:event_getUsersButtonActionPerformed
+
+    private void getChatsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getChatsButtonActionPerformed
+        this.consolePrint("Hay "+database.getChats().size()+" chats de partidas almacenados en la base de datos. \n");
+    }//GEN-LAST:event_getChatsButtonActionPerformed
+
+    private void statsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statsButtonActionPerformed
+        Hashtable<String, StatProfile> users =  new Hashtable<>();
+        LotRDataInput db = (LotRDataInput)database;
+        ArrayList<GameSchema> games = database.getGames();
+        for (GameSchema g : games){
+            Hashtable<String, String> aliases = new Hashtable<>();
+            LotRGame game = (LotRGame)g;
+            BasicDBList players = (BasicDBList) game.get("players");
+            DBObject[] playersArr = players.toArray(new DBObject[0]);
+            boolean userError=false;
+            for(DBObject p : playersArr) {
+                if (p.get("alias")!=null && p.get("userID")!=null){
+                    aliases.put((String)p.get("alias"), (String)p.get("userID"));
+                    if (!users.containsKey((String)p.get("userID"))){
+                        users.put((String)p.get("userID"), new StatProfile());
+                    }
+                }
+                else{
+                    userError=true;
+                }
+            }
+            //si no hubo usuarios sin data en la partida
+            if (!userError){
+                //cargo los datos de la partida
+                boolean analyzeDeaths=false;
+                for (String alias : aliases.keySet()){
+                    users.get(aliases.get(alias)).addGame();
+                    //si gane agrego al won
+                    if (game.get("result")!=null && ((DBObject)game.get("result")).get("victory")!=null){
+                        if (((DBObject)game.get("result")).get("victory")!=null){
+                            if ((boolean)((DBObject)game.get("result")).get("victory") == true){
+                                users.get(aliases.get(alias)).addWon();
+                            }
+                        }
+                    
+                    //agrego los puntos
+                    //posible horror de casting
+                        if (((DBObject)game.get("result")).get("score")!=null){
+                            users.get(aliases.get(alias)).addPoints((Integer)((DBObject)game.get("result")).get("score"));
+                        }
+                    
+                             //me fijo a ver si el user sobrevivio o no
+                            if (!(boolean)((DBObject)game.get("result")).get("victory")){
+                                   users.get(aliases.get(alias)).addDeath();
+
+                            }
+                            else{
+                                //si hay data del estado final de los players
+                                if (((DBObject)game.get("result")).get("players")!=null){
+                                    BasicDBList dead = (BasicDBList)((DBObject)game.get("result")).get("players");
+                                    int i=0;
+                                    boolean found=false;
+                                    while(!found && i<dead.size()){
+                                        if (((BasicDBObject)dead.get(i)).get("alias").equals(aliases.get(alias))){
+                                            if ((boolean)((BasicDBObject)dead.get(i)).get("dead")){
+                                                users.get(aliases.get(alias)).addDeath();
+                                            }
+
+                                            found=true;
+                                        }
+                                        i++;
+                                    }
+
+                                }
+                                else{
+                                    analyzeDeaths=true;
+                                }
+                        }
+                }
+                    //no hay result o este esta trunco
+                    else{
+                        users.get(aliases.get(alias)).addDeath();
+                }
+                    
+                }
+                if (analyzeDeaths){
+                    //tengo que calcularla
+                                    //evalua cada accion de juego
+                                    
+                                    ArrayList<GameActionSchema> gameActions = game.getGameActions();
+                                    int j=0;
+                                    while (j<gameActions.size()){
+                                        LotRGameAction action = (LotRGameAction) gameActions.get(j);
+
+                                            //evaluar acción   
+                                            String actionName = (String) action.get("action");
+                                            if (actionName.equals("KillPlayer")){
+                                                users.get(aliases.get((String)((BasicDBObject)action.get("data")).get("alias"))).addDeath();
+                                            }
+                                        j++;
+                                    }
+                }
+                //cargo los chats de ese usuario
+                //recupero el chat correspondiente a la partida
+                 DBObject chat = db.getChatForGame((String)game.get("gameID"));
+                if (chat!=null){
+                            BasicDBList msgs = (BasicDBList)chat.get("chats");
+                            for (Object o : msgs){
+                                    DBObject msg = (DBObject)o;
+                                    String alias = (String)msg.get("from");
+                                    users.get(aliases.get(alias)).addChat();
+                                }
+                 }
+            }       
+        }
+        for (String p:users.keySet()){
+            this.consolePrint("\nUserID: "+p);
+            this.consolePrint("Partidas jugadas: "+users.get(p).getGames());
+            this.consolePrint("Partidas ganadas: "+users.get(p).getWon());
+            this.consolePrint("Muertes: "+users.get(p).getDeaths());
+            this.consolePrint("Partidas sobrevividas: "+(users.get(p).getGames()-users.get(p).getDeaths()));
+            this.consolePrint("Procentaje de victorias: "+ (double)users.get(p).getWon()/(double)users.get(p).getGames());
+            this.consolePrint("Puntos obtenidos: "+users.get(p).getPoints());
+            this.consolePrint("Promedio de puntos por partida: "+(double)users.get(p).getPoints()/(double)users.get(p).getGames());
+            this.consolePrint("Mensajes de chat: "+users.get(p).getChats());
+            this.consolePrint("---------------------------------------------");
+            
+            //persistir los stats de cada jugador
+            BasicDBObject document = new BasicDBObject();
+            document.put("games", users.get(p).getGames());
+            document.put("won", users.get(p).getWon());
+            document.put("points", users.get(p).getPoints());
+            document.put("chats", users.get(p).getChats()); 
+            document.put("survives", users.get(p).getGames()-users.get(p).getDeaths());
+            db.updateStats(p, document);
+            
+        }
+    }//GEN-LAST:event_statsButtonActionPerformed
                  
     
     public void enableModelLoad(){
-        modelOptions.setEnabled(true);
-        loadJSONButton.setEnabled(true);
+        //modelOptions.setEnabled(true);
+        //loadJSONButton.setEnabled(true);
+        getGamesButton.setEnabled(true);
+        getChatsButton.setEnabled(true);
+        getUsersButton.setEnabled(true);
+        statsButton.setEnabled(true);
         tabbedPane.setEnabledAt(1, true);
         
         //cargo los chats de la db
@@ -874,14 +966,14 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox IPAButton;
-    private javax.swing.JButton cabezaButton;
     private javax.swing.JComboBox chatList;
     private javax.swing.JTextArea chatsArea;
     private javax.swing.JButton connectToGameButton;
     private javax.swing.JTextPane consoleArea;
     private javax.swing.JButton disconnectFromGameButton;
+    private javax.swing.JButton getChatsButton;
     private javax.swing.JButton getGamesButton;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton getUsersButton;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
@@ -895,6 +987,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -905,19 +998,16 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JButton loadJSONButton;
     private javax.swing.JTextArea messageArea;
     private javax.swing.JList messageList;
-    private javax.swing.JButton metricsButton;
-    private javax.swing.JComboBox modelOptions;
     private javax.swing.JButton nextButton;
     private javax.swing.JList ongoingGamesList;
     private javax.swing.JLabel playerLabel;
     private javax.swing.JButton prevButton;
-    private javax.swing.JButton resetAnalysisButton;
     private javax.swing.JTextField sendArea;
     private javax.swing.JButton socketConnectButton;
     private javax.swing.JButton socketDisconnectButton;
+    private javax.swing.JButton statsButton;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTextField urlArea;
     // End of variables declaration//GEN-END:variables

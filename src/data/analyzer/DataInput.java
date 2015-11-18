@@ -27,6 +27,10 @@ public abstract class DataInput {
     
     public abstract ArrayList<GameSchema> getGames();
     
+    public abstract ArrayList<GameSchema> getUnanalizedGames();
+    
     public abstract ArrayList<GameSchema> getGamesForUser(String userID);
+    
+    public abstract ArrayList<String> getChats();
     
 }

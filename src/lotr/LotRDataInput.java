@@ -89,6 +89,18 @@ public class LotRDataInput extends DataInput{
        return usersList;
     }
     
+     public ArrayList<GameSchema> getUnanalizedGames(){
+       ArrayList<GameSchema> allGames = this.getGames();
+       ArrayList<GameSchema> unanalyzed = new ArrayList();
+       for (GameSchema game: allGames){
+           //cast json boolean to string for comparison
+          if (!game.isAnalyzed()){
+              unanalyzed.add(game);
+          }
+       }
+       return unanalyzed;
+    }
+    
     public ArrayList<GameSchema> getGames(){
         DBCollection gamesCollection = db.getCollection("games");
         DBCursor games = gamesCollection.find();
@@ -200,6 +212,16 @@ public class LotRDataInput extends DataInput{
         BasicDBObject query = new BasicDBObject("gameID", gameID);
         DBObject chat = chatsCollection.findOne(query);
         return chat;
+    }
+    
+    public void updateStats(String userID, BasicDBObject newProfile){
+        DBCollection usersCollection = db.getCollection("users");
+        BasicDBObject subQuery = new BasicDBObject("userID",userID);
+        BasicDBObject query = new BasicDBObject("local",subQuery);
+        DBObject user = usersCollection.findOne(query);
+        if (user!=null){
+            usersCollection.update(user, new BasicDBObject("$set" , new BasicDBObject("stats",newProfile) ));
+        }
     }
     
     public ArrayList<String> getChats(){
